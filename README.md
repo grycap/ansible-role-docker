@@ -1,2 +1,2 @@
 # ansible-role-docker
-Ansible Role to install a Mesos Cluster
+Ansible Role to install Docker Engine.
