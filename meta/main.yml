@@ -1,0 +1,16 @@
+galaxy_info:
+  author: amcaar@i3m.upv.es
+  description: Install docker engine
+  company: GRyCAP UPV
+  license: Apache
+  min_ansible_version: 2.0
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+  galaxy_tags: 
+   - docker
+
+dependencies: []
+
+

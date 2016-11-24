@@ -1,0 +1,62 @@
+- name: Fail if OS distro is not Ubuntu 14.04
+  fail: 
+      msg="The role is designed only for Ubuntu 14.04"
+  when: "{{ ansible_distribution_version | version_compare('14.04', '!=') }}"
+
+- name: Install dependencies
+  apt: 
+      name={{ item }} 
+      update_cache=yes
+      state=present
+  with_items: 
+      - python-dev
+      - python-setuptools
+
+- name: Install pip
+  easy_install: 
+      name=pip 
+      state=present
+
+- name: Install docker-py
+  pip: 
+      name=docker-py 
+      state=present
+      version=1.2.3
+
+- name: Add docker apt repo
+  apt_repository:
+      repo='deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'
+      state=present
+
+- name: Import the Docker repository key
+  apt_key:
+      url=https://apt.dockerproject.org/gpg
+      state=present
+      id=2C52609D
+
+- name: Install Docker package
+  apt:
+      name=docker-engine
+      update_cache=yes
+      state=present
+
+- name: Configure docker0 bridge
+  lineinfile:
+    dest: /etc/default/docker
+    state: present
+    insertafter: ^DOCKER_OPTS=.*
+    line: "DOCKER_OPTS=\"$DOCKER_OPTS --bip={{docker_bridge_ip}}/24 \""
+  notify:
+    - restart docker
+
+- name: Configure registry mirror (if docker_mirror_host is defined)
+  lineinfile:
+    dest: /etc/default/docker
+    state: present
+    insertafter: ^DOCKER_OPTS=.*
+    line: "DOCKER_OPTS=\"$DOCKER_OPTS --registry-mirror={{docker_mirror_protocol}}://{{docker_mirror_host}}:{{docker_mirror_port}} \""
+  when: docker_mirror_host is defined
+  notify:
+    - restart docker
+
+- meta: flush_handlers
