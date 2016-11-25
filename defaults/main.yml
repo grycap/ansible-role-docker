@@ -1,4 +1,3 @@
 ---
-docker_mirror_host: 90.147.170.205 #added for testing - TO BE REMOVED
 docker_mirror_protocol: "http"
 docker_mirror_port: 5000
