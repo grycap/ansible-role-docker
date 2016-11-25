@@ -1,9 +1,4 @@
-- name: Fail if OS distro is not Ubuntu 14.04
-  fail: 
-      msg="The role is designed only for Ubuntu 14.04"
-  when: "{{ ansible_distribution_version | version_compare('14.04', '!=') }}"
-
-- name: Install dependencies
+- name: Install dependencies in Deb systems
   apt: 
       name={{ item }} 
       update_cache=yes
@@ -11,52 +6,51 @@
   with_items: 
       - python-dev
       - python-setuptools
+      - wget
+ 
+- name: Apt upgrade the kernel and install additional packages
+  apt: 
+      name=linux-image-generic-lts-trusty
+      update_cache=yes 
+      cache_valid_time=3600
+  when: ansible_os_family == "Debian" and (KERNEL_RELEASE.stdout | version_compare('3.13.0', '<='))
 
-- name: Install pip
-  easy_install: 
-      name=pip 
-      state=present
+- name: restart the machine if kernel was upgraded
+  command: shutdown -r now "Ansible updates triggered"
+  async: 0
+  poll: 0
+  ignore_errors: true
+  when: ansible_os_family == "Debian" and (KERNEL_RELEASE.stdout | version_compare('3.13.0', '<='))
 
-- name: Install docker-py
-  pip: 
-      name=docker-py 
-      state=present
-      version=1.2.3
+- name: waiting for machine to come back
+  local_action: wait_for host={{IM_NODE_NET_0_IP}} state=started
+  sudo: false
+  when: ansible_os_family == "Debian" and (KERNEL_RELEASE.stdout | version_compare('3.13.0', '<='))
 
-- name: Add docker apt repo
-  apt_repository:
-      repo='deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'
-      state=present
+- name: download docker code from repository
+  shell: wget -qO- https://get.docker.com/ | sh creates=/etc/default/docker
+  when: ansible_os_family == "Debian"
 
-- name: Import the Docker repository key
-  apt_key:
-      url=https://apt.dockerproject.org/gpg
-      state=present
-      id=2C52609D
+- name: Create the docker.repo file for CentOS 7
+  copy:
+    dest: "/etc/yum.repos.d/docker.repo"
+      content: |
+          [dockerrepo]
+          name=Docker Repository
+          baseurl=https://yum.dockerproject.org/repo/main/centos/7
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://yum.dockerproject.org/gpg
+      mode: 0644
+      owner: root
+      group: root
+    when: ansible_os_family == "RedHat"
 
-- name: Install Docker package
-  apt:
-      name=docker-engine
+- name: Yum install Docker in REL system (only works with centos7)
+  yum: 
+      name=docker-engine 
+      state=latest 
       update_cache=yes
-      state=present
-
-- name: Configure docker0 bridge
-  lineinfile:
-    dest: /etc/default/docker
-    state: present
-    insertafter: ^DOCKER_OPTS=.*
-    line: "DOCKER_OPTS=\"$DOCKER_OPTS --bip={{docker_bridge_ip}}/24 \""
-  notify:
-    - restart docker
-
-- name: Configure registry mirror (if docker_mirror_host is defined)
-  lineinfile:
-    dest: /etc/default/docker
-    state: present
-    insertafter: ^DOCKER_OPTS=.*
-    line: "DOCKER_OPTS=\"$DOCKER_OPTS --registry-mirror={{docker_mirror_protocol}}://{{docker_mirror_host}}:{{docker_mirror_port}} \""
-  when: docker_mirror_host is defined
-  notify:
-    - restart docker
-
-- meta: flush_handlers
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+      
+- service: name=docker state=started
