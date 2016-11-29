@@ -1,3 +1,6 @@
+- command: uname -r
+  register: KERNEL_RELEASE
+
 - name: Install dependencies in Deb systems
   apt: 
       name={{ item }} 
