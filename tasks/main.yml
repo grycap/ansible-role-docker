@@ -10,6 +10,7 @@
       - python-dev
       - python-setuptools
       - wget
+  when: ansible_os_family == "Debian"
  
 - name: Apt upgrade the kernel and install additional packages
   apt: 
