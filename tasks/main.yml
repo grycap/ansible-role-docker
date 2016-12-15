@@ -1,3 +1,8 @@
+- name: Fail if OS distro is Centos 6.x
+  fail: 
+      msg="The role does not work with Centos 6.x"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int <= 6
+
 - command: uname -r
   register: KERNEL_RELEASE
 
@@ -48,13 +53,13 @@
     mode: 0644
     owner: root
     group: root
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 7
 
 - name: Yum install Docker in REL system (only works with centos7)
   yum: 
       name=docker-engine 
       state=latest 
       update_cache=yes
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 7
       
 - service: name=docker state=started
