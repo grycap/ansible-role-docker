@@ -28,7 +28,7 @@
 
 - name: waiting for machine to come back
   local_action: wait_for host={{IM_NODE_NET_0_IP}} state=started
-  sudo: false
+  become: false
   when: KERNEL_RELEASE.stdout | version_compare('3.13.0', '<=')
 
 - name: download docker code from repository
