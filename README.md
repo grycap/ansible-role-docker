@@ -13,7 +13,6 @@ The variables that can be passed to this role and a brief description about them
 
 	docker_mirror_protocol: "http"
 	docker_mirror_port: 5000
-	docker_start_service: true
 	docker_opts: ""
 
 Example Playbook
