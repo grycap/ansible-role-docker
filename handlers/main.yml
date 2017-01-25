@@ -1,5 +1,8 @@
 ---
 # handlers file for docker.ubuntu
+- name: reload systemctl
+  command: systemctl daemon-reload
+
 - name: start docker
   service: name=docker state=started
 
