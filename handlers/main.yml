@@ -2,6 +2,7 @@
 # handlers file for docker.ubuntu
 - name: reload systemctl
   command: systemctl daemon-reload
+  ignore_errors: yes
 
 - name: start docker
   service: name=docker state=started
