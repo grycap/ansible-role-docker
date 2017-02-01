@@ -1,29 +1,23 @@
-- name: Create the docker.repo file for CentOS 7
-  copy:
-    dest: "/etc/yum.repos.d/docker.repo"
-    content: |
-        [dockerrepo]
-        name=Docker Repository
-        baseurl=https://yum.dockerproject.org/repo/main/centos/7
-        enabled=1
-        gpgcheck=1
-        gpgkey=https://yum.dockerproject.org/gpg
-    mode: 0644
-    owner: root
-    group: root
+- block:
+  - name: Remove unofficial Docker packages
+    yum: name=docker state=removed
+
+  - name: Add missing utils
+    yum: name=yum-utils
+
+  - name: Add missing utils
+    command: yum-config-manager --add-repo https://docs.docker.com/engine/installation/linux/repo_files/centos/docker.repo
+
+  - name: Yum install Docker
+    yum: name=docker-engine state=latest update_cache=yes
+
   when: ansible_distribution_major_version|int >= 7
 
-- name: Yum install Docker in REL system (only works with centos7)
-  yum: 
-      name=docker-engine
-      state=latest 
-      update_cache=yes
-  when: ansible_distribution_major_version|int >= 7
+- block:
+  - name: EPEL
+    yum: name=epel-release
 
-- name: EPEL
-  yum: name=epel-release
-  when: ansible_distribution_major_version|int < 7
+  - name: Yum install docker in RH 6
+    yum: name=docker-io update_cache=yes
 
-- name: Yum install docker in RH 6
-  yum: name=docker-io update_cache=yes
   when: ansible_distribution_major_version|int < 7
