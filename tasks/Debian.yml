@@ -1,21 +1,20 @@
-
 - command: uname -r
   register: KERNEL_RELEASE
 
 - name: Install dependencies in Deb systems
-  apt: 
-      name={{ item }} 
+  apt:
+      name={{ item }}
       update_cache=yes
       state=present
-  with_items: 
+  with_items:
       - python-dev
       - python-setuptools
       - wget
- 
+
 - name: Apt upgrade the kernel and install additional packages
-  apt: 
+  apt:
       name=linux-image-generic-lts-trusty
-      update_cache=yes 
+      update_cache=yes
       cache_valid_time=3600
   when: KERNEL_RELEASE.stdout | version_compare('3.13.0', '<=')
 

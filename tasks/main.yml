@@ -10,7 +10,6 @@
   - stat: path=/lib/systemd/system/docker.service
     register: docker_service
 
-
   - block:
     - name: Set DOCKER_OPTS
       lineinfile:
@@ -18,12 +17,17 @@
         regexp: 'DOCKER_OPTS='
         line: 'DOCKER_OPTS="{{docker_opts}}"'
       when: docker_opts != ""
+      notify:
+      - restart docker
 
     # Enable to read the docker default values
     - lineinfile:
         dest: /lib/systemd/system/docker.service
         insertbefore: '^ExecStart='
         line: 'EnvironmentFile=/etc/default/docker'
+      notify:
+      - reload systemctl
+      - restart docker
 
     - lineinfile:
         dest: /lib/systemd/system/docker.service
