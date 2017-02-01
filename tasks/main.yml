@@ -3,7 +3,7 @@
   register: docker_service_running
   ignore_errors: yes
 
--block:
+- block:
   - name: Include "{{ansible_os_family}}" tasks
     include: "{{ansible_os_family}}.yml"
 
