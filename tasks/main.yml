@@ -31,6 +31,3 @@
     - reload systemctl
     - restart docker
   when: docker_service.stat.exists
-
-- service: name=docker state=started
-  when: docker_start_service

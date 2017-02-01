@@ -5,7 +5,7 @@
   - name: Add missing utils
     yum: name=yum-utils
 
-  - name: Add missing utils
+  - name: Add docker repo
     command: yum-config-manager --add-repo https://docs.docker.com/engine/installation/linux/repo_files/centos/docker.repo
 
   - name: Yum install Docker
