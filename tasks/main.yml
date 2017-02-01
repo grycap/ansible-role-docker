@@ -35,4 +35,4 @@
       - restart docker
     when: docker_service.stat.exists
 
-when: docker_service_running|failed
+  when: docker_service_running|failed
