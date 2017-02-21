@@ -19,21 +19,20 @@
       dest: /lib/systemd/system/docker.service
       insertbefore: '^ExecStart='
       line: 'EnvironmentFile=/etc/default/docker'
-      create: yes
     notify:
     - reload systemctl
     - restart docker
-    when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "6") or
-          (ansible_distribution == "Debian" )
+    when: ansible_distribution == "Debian"
 
   - lineinfile:
       dest: /lib/systemd/system/docker.service
       regexp: '^(ExecStart=)(.*)(-H fd://)$'
       line: '\1\2\3 $DOCKER_OPTS'
       backrefs: yes
-      create: yes
     notify:
     - reload systemctl
     - restart docker
+    when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7") or
+          (ansible_distribution == "Debian" )
 
   when: not docker_bin.stat.exists
