@@ -21,7 +21,7 @@
       line: 'EnvironmentFile=/etc/default/docker'
       create: yes
     notify:
-    - reload systemctl
+    #- reload systemctl
     - restart docker
 
   - lineinfile:
@@ -31,7 +31,7 @@
       backrefs: yes
       create: yes
     notify:
-    - reload systemctl
+    #- reload systemctl
     - restart docker
 
   when: not docker_bin.stat.exists
