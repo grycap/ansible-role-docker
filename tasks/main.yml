@@ -1,5 +1,5 @@
-- stat: path=/lib/systemd/system/docker.service
-  register: docker_service
+- stat: path=/usr/bin/docker
+  register: docker_bin
 
 - block:
   - name: Include "{{ansible_os_family}}" tasks
@@ -32,4 +32,4 @@
     - reload systemctl
     - restart docker
 
-  when: not docker_service.stat.exists
+  when: not docker_bin.stat.exists
