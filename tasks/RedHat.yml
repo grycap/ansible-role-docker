@@ -6,7 +6,7 @@
     yum: name=yum-utils
 
   - name: Add docker repo
-    command: yum-config-manager --add-repo https://docs.docker.com/engine/installation/linux/repo_files/centos/docker.repo
+    command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
   - name: Yum install Docker
     yum: name=docker-engine state=latest update_cache=yes
