@@ -10,8 +10,8 @@
   notify:
   - restart docker
 
-# Enable to read the docker default values
-- lineinfile:
+- name: Enable to read the docker default values
+  lineinfile:
     dest: /lib/systemd/system/docker.service
     insertbefore: '^ExecStart='
     line: 'EnvironmentFile=/etc/default/docker'
@@ -31,7 +31,7 @@
   when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7") or
         (ansible_distribution == "Debian" )
 
-- name: Create chronos container env file
+- name: Create docker-daemon conf file
   template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json

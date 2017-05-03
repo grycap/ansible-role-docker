@@ -1,4 +1,5 @@
 {
   "cluster-store": "consul://{{ ansible_default_ipv4.address }}:8500",
-  "cluster-advertise": “{{ ansible_default_ipv4.address }}:4000"
+  "cluster-advertise": "{{ ansible_default_ipv4.address }}:4000",
+  "storage-driver": "overlay"
 }
