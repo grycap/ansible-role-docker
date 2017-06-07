@@ -6,6 +6,7 @@
     dest: /etc/default/docker
     regexp: 'DOCKER_OPTS='
     line: 'DOCKER_OPTS="{{docker_opts}}"'
+    create: yes
   when: docker_opts != ""
   notify:
   - restart docker
