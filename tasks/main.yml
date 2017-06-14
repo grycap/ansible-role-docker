@@ -1,6 +1,34 @@
 - name: Include "{{ansible_os_family}}" tasks
   include: "{{ansible_os_family}}.yml"
 
+- name: Create directory for registry keys
+  file:
+    path: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
+    state: directory
+
+- name: Create directory for the docker certs
+  file:
+    path: "/opt/docker_registry/certs"
+    state: directory
+
+- name: Include "{{mesos_type_of_node}}" mesos recipe
+  include: "{{mesos_type_of_node}}.yml"
+
+- name: Copy {{registry_name}}.localdomain.cert file
+  copy:
+    src: "/tmp/{{registry_name}}.localdomain.cert"
+    dest: "/etc/docker/certs.d/{{registry_name}}.localdomain:5000/{{registry_name}}.localdomain.cert"
+
+- name: Copy {{registry_name}}.localdomain.key file
+  copy:
+    src: "/tmp/{{registry_name}}.localdomain.key"
+    dest: "/etc/docker/certs.d/{{registry_name}}.localdomain:5000/{{registry_name}}.localdomain.key"
+
+- name: Copy ca.crt file
+  copy:
+    src: /tmp/ca.crt
+    dest: "/etc/docker/certs.d/{{registry_name}}.localdomain:5000/ca.crt"
+
 - name: Set DOCKER_OPTS
   lineinfile:
     dest: /etc/default/docker

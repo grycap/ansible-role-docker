@@ -32,3 +32,9 @@
 
 - name: download docker code from repository
   shell: wget -qO- https://get.docker.com/ | sh creates=/etc/default/docker
+
+- name: Install CRIU
+  apt: name=criu update_cache=yes state=present
+  when: ansible_distribution_major_version == "16"
+  tag:
+    - install-criu

@@ -3,3 +3,11 @@ docker_mirror_protocol: "http"
 docker_mirror_port: 5000
 docker_start_service: true
 docker_opts: ""
+docker_type_of_node: "front"
+registry_name: "frontserver"
+country: "."
+region: "."
+city: "."
+organization: "."
+ounit: "."
+private_dns_name: "{{ ansible_hostname }}"
