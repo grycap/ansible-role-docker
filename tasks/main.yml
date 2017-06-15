@@ -11,7 +11,7 @@
     path: "/opt/docker_registry/certs"
     state: directory
 
-- name: Include "{{docker_type_of_node}}" mesos recipe
+- name: Include "{{docker_type_of_node}}" docker recipe
   include: "{{docker_type_of_node}}.yml"
 
 - name: Copy {{registry_name}}.localdomain.cert file
