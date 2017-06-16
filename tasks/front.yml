@@ -15,7 +15,7 @@
     chdir: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
 
 - name:  Create a certificate request for the private key
-  command: openssl req -nodes -newkey rsa:2048 -keyout {{private_dns_name}}.key -out {{registry_name}}.localdomain.csr -subj "/C={{country}}/ST={{region}}/L={{city}}/O={{organization}}/OU={{ounit}}/CN={{private_dns_name}}"
+  command: openssl req -nodes -newkey rsa:2048 -keyout {{private_dns_name}}.key -out {{private_dns_name}}.csr -subj "/C={{country}}/ST={{region}}/L={{city}}/O={{organization}}/OU={{ounit}}/CN={{private_dns_name}}"
   args:
     chdir: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
 
