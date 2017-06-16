@@ -16,11 +16,13 @@
 
 - name: Copy {{private_dns_name}}.cert file
   copy:
+    remote_src: True
     src: "/etc/docker/certs.d/{{private_dns_name}}:5000/{{private_dns_name}}.cert"
     dest: "/opt/docker_registry/certs/{{private_dns_name}}.cert"
 
 - name: Copy {{private_dns_name}}.key file
   copy:
+    remote_src: True    
     src: "/etc/docker/certs.d/{{private_dns_name}}:5000/{{private_dns_name}}.key"
     dest: "/opt/docker_registry/certs/{{private_dns_name}}.key"
 
