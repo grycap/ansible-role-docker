@@ -9,8 +9,8 @@
   args:
     chdir: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
 
-- name:  Create a password less private key
-  command: openssl genrsa -nodes -out client.key 4096
+- name:  Create a passwordless private key
+  command: openssl genrsa -out client.key 4096
   args:
     chdir: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
 
