@@ -2,24 +2,24 @@
 - name: Create the CA private key
   command: openssl genrsa -out ca.key 4096
   args:
-    chdir: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
+    chdir: "/opt/docker_registry/certs"
 
 - name: Create the CA certificate
   command: openssl req -new -x509 -days 365 -key ca.key -out ca.crt  -subj "/C={{country}}/ST={{region}}/L={{city}}/O={{organization}}/OU={{ounit}}/CN={{private_dns_name}}"
   args:
-    chdir: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
+    chdir: "/opt/docker_registry/certs"
 
 - name:  Create a passwordless private key
   command: openssl genrsa -out client.key 4096
   args:
-    chdir: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
+    chdir: "/opt/docker_registry/certs"
 
 - name:  Create a certificate request for the private key
   command: openssl req -nodes -newkey rsa:2048 -keyout {{private_dns_name}}.key -out {{private_dns_name}}.csr -subj "/C={{country}}/ST={{region}}/L={{city}}/O={{organization}}/OU={{ounit}}/CN={{private_dns_name}}"
   args:
-    chdir: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
+    chdir: "/opt/docker_registry/certs"
 
 - name:  Signing the certificates
   command: openssl x509 -req -days 365 -in {{private_dns_name}}.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out {{private_dns_name}}.cert
   args:
-    chdir: "/etc/docker/certs.d/{{private_dns_name}}:5000/"
+    chdir: "/opt/docker_registry/certs"
