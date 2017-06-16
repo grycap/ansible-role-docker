@@ -14,20 +14,15 @@
 - name: Include "{{docker_type_of_node}}" docker recipe
   include: "{{docker_type_of_node}}.yml"
 
-- name: Copy {{registry_name}}.cert file
+- name: Copy {{private_dns_name}}.cert file
   copy:
-    src: "/tmp/{{registry_name}}.cert"
-    dest: "/etc/docker/certs.d/{{registry_name}}:5000/{{registry_name}}.cert"
+    src: "/etc/docker/certs.d/{{private_dns_name}}:5000/{{private_dns_name}}.cert"
+    dest: "/opt/docker_registry/certs/{{private_dns_name}}.cert"
 
-- name: Copy {{registry_name}}.key file
+- name: Copy {{private_dns_name}}.key file
   copy:
-    src: "/tmp/{{registry_name}}.key"
-    dest: "/etc/docker/certs.d/{{registry_name}}:5000/{{registry_name}}.key"
-
-- name: Copy ca.crt file
-  copy:
-    src: /tmp/ca.crt
-    dest: "/etc/docker/certs.d/{{registry_name}}:5000/ca.crt"
+    src: "/etc/docker/certs.d/{{private_dns_name}}:5000/{{private_dns_name}}.key"
+    dest: "/opt/docker_registry/certs/{{private_dns_name}}.key"
 
 - name: Set DOCKER_OPTS
   lineinfile:
