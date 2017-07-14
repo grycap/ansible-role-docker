@@ -1,13 +1,13 @@
 ---
 - name: Copy Certificates from frontend
-  copy: src="/etc/docker/certs.d/{{private_dns_name}}:5000/{{item}}" dest="/etc/docker/certs.d/{{private_dns_name}}:5000/"
+  copy: src="/etc/docker/certs.d/{{front_private_dns_name}}:5000/{{item}}" dest="/etc/docker/certs.d/{{front_private_dns_name}}:5000/"
   with_items:
-    - bigseaserver.localdomain.cert
-    - bigseaserver.localdomain.key
+    - {{front_private_dns_name}}.cert
+    - {{front_private_dns_name}}.key
     - ca.crt
 
 - name: Copy certificates from frontend-2
   copy: src="/opt/docker_registry/certs/{{item}}" dest="/opt/docker_registry/certs/"
   with_items:
-    - bigseaserver.localdomain.cert
-    - bigseaserver.localdomain.key
+    - {{front_private_dns_name}}.cert
+    - {{front_private_dns_name}}.key
