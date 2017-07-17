@@ -10,6 +10,10 @@
       - python-dev
       - python-setuptools
       - curl
+      - python-pip
+
+- name: Install dependencies for docker management
+  pip: name=docker-py
 
 - name: Apt upgrade the kernel and install additional packages
   apt:
