@@ -23,3 +23,21 @@
   command: openssl x509 -req -days 365 -in {{private_dns_name}}.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out {{private_dns_name}}.cert
   args:
     chdir: "/opt/docker_registry/certs"
+
+- name: Copy {{private_dns_name}}.cert file
+  copy:
+    remote_src: True
+    dest: "/etc/docker/certs.d/{{private_dns_name}}:5000/{{private_dns_name}}.cert"
+    src: "/opt/docker_registry/certs/{{private_dns_name}}.cert"
+
+- name: Copy {{private_dns_name}}.key file
+  copy:
+    remote_src: True
+    dest: "/etc/docker/certs.d/{{private_dns_name}}:5000/{{private_dns_name}}.key"
+    src: "/opt/docker_registry/certs/{{private_dns_name}}.key"
+
+- name: Copy ca.crt file
+  copy:
+    remote_src: True
+    dest: "/etc/docker/certs.d/{{private_dns_name}}:5000/ca.crt"
+    src: "/opt/docker_registry/certs/ca.crt"
