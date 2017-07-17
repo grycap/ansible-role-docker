@@ -1,23 +1,23 @@
 ---
 - name: Create docker certs directory
   file:
-    path: /etc/docker/certs.d/{{front_private_dns_name}}\:5000/
+    path: "/etc/docker/certs.d/{{front_private_dns_name}}:5000/"
     state: directory
 
 - name: Create docker registry directory
   file:
-    path: /opt/docker_registry/certs/
+    path: "/opt/docker_registry/certs/"
     state: directory
 
-- name: Copy Certificates from frontend
-  copy: src="/etc/docker/certs.d/{{front_private_dns_name}}\:5000/{{item}}" dest="/etc/docker/certs.d/{{front_private_dns_name}}\:5000/"
-  with_items:
-    - "{{front_private_dns_name}}.cert"
-    - "{{front_private_dns_name}}.key"
-    - ca.crt
-
-- name: Copy certificates from frontend-2
+- name: Copy certificates from frontend
   copy: src="/opt/docker_registry/certs/{{item}}" dest="/opt/docker_registry/certs/"
   with_items:
     - "{{front_private_dns_name}}.cert"
     - "{{front_private_dns_name}}.key"
+
+- name: Copy Certificates from frontend-2
+  copy: src="/opt/docker_registry/certs/{{item}}" dest="/etc/docker/certs.d/{{front_private_dns_name}}:5000/"
+  with_items:
+    - "{{front_private_dns_name}}.cert"
+    - "{{front_private_dns_name}}.key"
+    - ca.crt
