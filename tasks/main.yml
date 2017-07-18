@@ -9,23 +9,6 @@
 - name: Include "{{docker_type_of_node}}" docker recipe
   include: "{{docker_type_of_node}}.yml"
 
-- name: Include "{{docker_type_of_node}}" docker recipe
-  include: "{{docker_type_of_node}}.yml"
-
-- name: Run docker registry
-  docker_container:
-    name: registry
-    image: registry:2
-    volumes:
-      - /opt/docker_registry:/var/lib/registry
-      - /opt/docker_registry/certs:/certs
-    ports:
-     - "5000:5000"
-    env:
-        REGISTRY_HTTP_TLS_CERTIFICATE: /certs/ca.crt
-        REGISTRY_HTTP_TLS_KEY: /certs/ca.key
-    restart_policy: always
-
 - name: Set DOCKER_OPTS
   lineinfile:
     dest: /etc/default/docker

@@ -46,3 +46,17 @@
     remote_src: True
     dest: "/etc/docker/certs.d/{{private_dns_name}}:5000/ca.crt"
     src: "/opt/docker_registry/certs/ca.crt"
+
+- name: Run docker registry
+  docker_container:
+    name: registry
+    image: registry:2
+    volumes:
+      - /opt/docker_registry:/var/lib/registry
+      - /opt/docker_registry/certs:/certs
+    ports:
+     - "5000:5000"
+    env:
+        REGISTRY_HTTP_TLS_CERTIFICATE: /certs/ca.crt
+        REGISTRY_HTTP_TLS_KEY: /certs/ca.key
+    restart_policy: always    
