@@ -54,7 +54,7 @@
     state: absent
   with_items:
     - "{{private_dns_name}}.csr"
-    - client.key"
+    - client.key
     - ca.key
 
 - name: Run docker registry
