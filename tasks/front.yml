@@ -47,6 +47,16 @@
     dest: "/etc/docker/certs.d/{{private_dns_name}}:5000/ca.crt"
     src: "/opt/docker_registry/certs/ca.crt"
 
+# Delete unneeded certificates
+- name: Create directory for registry keys
+  file:
+    path: "/opt/docker_registry/certs/{{item}}"
+    state: absent
+  with_items:
+    - "{{private_dns_name}}.csr"
+    - client.key"
+    - ca.key
+
 - name: Run docker registry
   docker_container:
     name: registry
@@ -57,6 +67,6 @@
     ports:
      - "5000:5000"
     env:
-        REGISTRY_HTTP_TLS_CERTIFICATE: /certs/ca.crt
-        REGISTRY_HTTP_TLS_KEY: /certs/ca.key
-    restart_policy: always    
+        REGISTRY_HTTP_TLS_CERTIFICATE: /certs/mesosserver.cert
+        REGISTRY_HTTP_TLS_KEY: /certs/mesosserver.key
+    restart_policy: always
