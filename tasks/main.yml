@@ -24,6 +24,7 @@
     env:
         REGISTRY_HTTP_TLS_CERTIFICATE: /certs/ca.crt
         REGISTRY_HTTP_TLS_KEY: /certs/ca.key
+    restart_policy: always
 
 - name: Set DOCKER_OPTS
   lineinfile:
