@@ -47,8 +47,7 @@
     dest: "/etc/docker/certs.d/{{private_dns_name}}:5000/ca.crt"
     src: "/opt/docker_registry/certs/ca.crt"
 
-# Delete unneeded certificates
-- name: Create directory for registry keys
+- name: Delete unneeded certificates
   file:
     path: "/opt/docker_registry/certs/{{item}}"
     state: absent

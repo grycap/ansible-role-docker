@@ -6,9 +6,6 @@
     path: "/opt/docker_registry/certs"
     state: directory
 
-- name: Include "{{docker_type_of_node}}" docker recipe
-  include: "{{docker_type_of_node}}.yml"
-
 - name: Set DOCKER_OPTS
   lineinfile:
     dest: /etc/default/docker
@@ -44,3 +41,6 @@
   when: docker_service.stat.exists and
         ((ansible_os_family == "RedHat" and ansible_distribution_major_version == "7") or
         (ansible_os_family == "Debian"))
+
+- name: Include "{{docker_type_of_node}}" docker recipe
+  include: "{{docker_type_of_node}}.yml"
