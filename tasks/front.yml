@@ -69,3 +69,19 @@
         REGISTRY_HTTP_TLS_CERTIFICATE: /certs/mesosserver.cert
         REGISTRY_HTTP_TLS_KEY: /certs/mesosserver.key
     restart_policy: always
+
+- name: Restart docker registry
+  docker_container:
+    state: started
+    restart: yes
+    name: registry
+    image: registry:2
+    volumes:
+      - /opt/docker_registry:/var/lib/registry
+      - /opt/docker_registry/certs:/certs
+    ports:
+     - "5000:5000"
+    env:
+        REGISTRY_HTTP_TLS_CERTIFICATE: /certs/mesosserver.cert
+        REGISTRY_HTTP_TLS_KEY: /certs/mesosserver.key
+    restart_policy: always
