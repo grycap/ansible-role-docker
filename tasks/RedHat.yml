@@ -23,9 +23,5 @@
   when: ansible_distribution_major_version|int < 7
 
 - name: Install CRIU
-  yum: name=criu,python-pip state=latest
-  when: ansible_distribution_major_version|int >= 7
-
-- name: Install dependencies for docker management
-  pip: name=docker-py
+  yum: name=criu state=latest
   when: ansible_distribution_major_version|int >= 7

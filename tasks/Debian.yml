@@ -7,10 +7,6 @@
       - python-dev
       - python-setuptools
       - curl
-      - python-pip
-
-- name: Install dependencies for docker management
-  pip: name=docker-py
 
 - name: Apt upgrade the kernel and install additional packages
   apt: name=linux-image-generic-lts-trusty update_cache=yes cache_valid_time=3600

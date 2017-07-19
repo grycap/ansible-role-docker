@@ -3,11 +3,3 @@ docker_mirror_protocol: "http"
 docker_mirror_port: 5000
 docker_start_service: true
 docker_opts: ""
-docker_type_of_node: "front"
-country: "ES"
-region: "Valencia"
-city: "Valencia"
-organization: "UPV"
-ounit: "I3M"
-private_dns_name: "{{ ansible_hostname }}"
-front_private_dns_name: ""
