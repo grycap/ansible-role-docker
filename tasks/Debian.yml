@@ -2,20 +2,14 @@
   register: KERNEL_RELEASE
 
 - name: Install dependencies in Deb systems
-  apt:
-      name={{ item }}
-      update_cache=yes
-      state=present
+  apt: name={{ item }} update_cache=yes state=present
   with_items:
       - python-dev
       - python-setuptools
       - curl
 
 - name: Apt upgrade the kernel and install additional packages
-  apt:
-      name=linux-image-generic-lts-trusty
-      update_cache=yes
-      cache_valid_time=3600
+  apt: name=linux-image-generic-lts-trusty update_cache=yes cache_valid_time=3600
   when: KERNEL_RELEASE.stdout | version_compare('3.13.0', '<=')
 
 - name: restart the machine if kernel was upgraded
@@ -32,3 +26,7 @@
 
 - name: download docker code from repository
   shell: curl -s https://get.docker.com/ | sh creates=/etc/default/docker
+
+- name: Install CRIU
+  apt: name=criu update_cache=yes state=present
+  when: ansible_distribution_major_version == "16"
