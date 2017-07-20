@@ -1,11 +1,6 @@
 - name: Include "{{ansible_os_family}}" tasks
   include: "{{ansible_os_family}}.yml"
 
-- name: Create directory for the docker certs
-  file:
-    path: "/opt/docker_registry/certs"
-    state: directory
-
 - name: Set DOCKER_OPTS
   lineinfile:
     dest: /etc/default/docker
