@@ -29,8 +29,8 @@
 
 - lineinfile:
     dest: /lib/systemd/system/docker.service
-    regexp: '^(ExecStart=)(.*)(-H fd://)$'
-    line: '\1\2\3 $DOCKER_OPTS'
+    regexp: '(?!.*\$DOCKER_OPTS.*)(^ExecStart=.*)'
+    line: '\1 $DOCKER_OPTS'
     backrefs: yes
   notify:
   - reload systemctl
