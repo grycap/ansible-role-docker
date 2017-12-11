@@ -1,6 +1,11 @@
 - name: Include "{{ansible_os_family}}" tasks
   include: "{{ansible_os_family}}.yml"
 
+- name: Assure that /etc/default/docker exists
+  file:
+    path: /etc/default/docker
+    state: touch
+
 - name: Set DOCKER_OPTS
   lineinfile:
     dest: /etc/default/docker
@@ -10,6 +15,7 @@
   when: docker_opts != ""
   notify:
   - restart docker
+
 
 # Enable to read the docker default values
 - stat:
