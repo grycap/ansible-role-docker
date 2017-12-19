@@ -38,3 +38,17 @@
   when: docker_service.stat.exists and
         ((ansible_os_family == "RedHat" and ansible_distribution_major_version == "7") or
         (ansible_os_family == "Debian"))
+
+- block:
+  - name: add user to docker group
+    user: 
+      name: "{{ item }}"
+      groups: docker
+      append: yes
+    sudo: true
+    with_items:
+      - ubuntu
+
+  - name: Kill own ssh connections
+    ssh-reconnect: all=True
+  when: ansible_distribution == 'Ubuntu'    
