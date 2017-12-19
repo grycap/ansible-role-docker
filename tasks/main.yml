@@ -1,6 +1,11 @@
 - name: Include "{{ansible_os_family}}" tasks
   include: "{{ansible_os_family}}.yml"
 
+- name: Assure that /etc/default/docker exists
+  file:
+    path: /etc/default/docker
+    state: touch
+
 - name: Set DOCKER_OPTS
   lineinfile:
     dest: /etc/default/docker
@@ -52,3 +57,7 @@
   - name: Kill own ssh connections
     ssh-reconnect: all=True
   when: ansible_distribution == 'Ubuntu'    
+
+- name: start docker
+  service: name=docker state=started
+  when: docker_start_service
