@@ -26,5 +26,5 @@
   yum: name=criu state=latest
   when: ansible_distribution_major_version|int >= 7
 
-- name: Install Docker-py
-  yum: name=python-docker-py state=present
+- name: Install PIP
+  yum: name=python-pip state=present
