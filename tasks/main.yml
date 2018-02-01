@@ -7,6 +7,9 @@
   - name: Include "{{ansible_os_family}}" tasks
     include: "{{ansible_os_family}}.yml"
 
+  - name: Install dependencies for docker management
+    pip: name=docker-py
+
   - name: Assure that /etc/default/docker exists
     file:
       path: /etc/default/docker
