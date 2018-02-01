@@ -30,3 +30,6 @@
 - name: Install CRIU
   apt: name=criu update_cache=yes state=present
   when: ansible_distribution_major_version == "16"
+
+- name: Install Docker-py
+  apt: name=python-docker state=present
