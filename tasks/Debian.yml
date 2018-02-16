@@ -8,6 +8,9 @@
       - python-setuptools
       - curl
       - python-pip
+      - apt-transport-https
+      - ca-certificates
+      - curl
 
 - name: Apt upgrade the kernel and install additional packages
   apt: name=linux-image-generic-lts-trusty update_cache=yes cache_valid_time=3600
@@ -25,8 +28,11 @@
   become: false
   when: KERNEL_RELEASE.stdout | version_compare('3.13.0', '<=')
 
-- name: download docker code from repository
-  shell: curl -s https://get.docker.com/ | sh creates=/etc/default/docker
+- name: Add docker-ce  repo
+  apt_repository: repo='deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_channel }}'
+
+- name: Install docker
+  apt: name=docker-ce update_cache=yes
 
 - name: Install CRIU
   apt: name=criu update_cache=yes state=present
