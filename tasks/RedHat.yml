@@ -3,7 +3,7 @@
     yum: name=docker state=removed
 
   - name: Install https get_url reqs
-    yum: name=python-urllib3,python-ndg_httpsclient,python-pyasn1
+    yum: name=python-ndg_httpsclient,python-pyasn1
 
   - name: Add docker repo
     get_url: url=https://download.docker.com/linux/centos/docker-ce.repo dest=/etc/yum.repos.d/docker-ce.repo
