@@ -8,7 +8,7 @@
     include: "{{ansible_os_family}}.yml"
 
   - name: Install dependencies for docker management
-    pip: name=docker
+    pip: name=docker-py
 
   - name: Assure that /etc/default/docker exists
     file:
