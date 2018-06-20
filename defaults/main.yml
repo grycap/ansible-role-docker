@@ -2,5 +2,6 @@
 docker_mirror_protocol: "http"
 docker_mirror_port: 5000
 docker_start_service: true
+docker_start_enable_service: true
 docker_opts: ""
 docker_channel: "stable"
