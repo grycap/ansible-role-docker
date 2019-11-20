@@ -9,6 +9,9 @@ language: python
 python: "2.7"
 
 env:
+  - distro: centos6
+    init: /sbin/init
+    run_opts: ""
   - distro: centos7
     init: /usr/lib/systemd/systemd
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"

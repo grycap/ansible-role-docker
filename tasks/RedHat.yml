@@ -19,20 +19,21 @@
   - name: Yum install Docker
     yum: name=docker-ce,epel-release state=latest update_cache=yes
 
+  - name: Install CRIU
+    yum: name=criu state=latest
   when: ansible_distribution_major_version|int >= 7
 
 - block:
+
   - name: EPEL
     yum: name=epel-release
 
-  - name: Yum install docker in RH 6
-    yum: name=docker-io update_cache=yes
+  - name: Install the docker rpm
+    yum:
+      name: https://yum.dockerproject.org/repo/main/centos/6/Packages/docker-engine-1.7.1-1.el6.x86_64.rpm
+      state: present
 
   when: ansible_distribution_major_version|int < 7
-
-- name: Install CRIU
-  yum: name=criu state=latest
-  when: ansible_distribution_major_version|int >= 7
 
 - name: Install PIP
   yum: name=python-pip state=present
