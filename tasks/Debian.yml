@@ -1,13 +1,23 @@
 - name: Install dependencies in Deb systems
-  apt: name={{ item }} update_cache=yes cache_valid_time=3600 state=present
-  with_items:
-      - python-dev
+  apt: 
+    name: 
       - python-setuptools
-      - curl
       - python-pip
       - apt-transport-https
       - ca-certificates
       - curl
+      - gnupg2
+    update_cache: yes
+    cache_valid_time: 3600
+    state: present
+
+- name: Install dependencies in Deb systems
+  apt: name=gnupg2
+  when: ansible_distribution != "Ubuntu"
+
+- name: Install dependencies in Deb systems
+  apt: name=gnupg-agent
+  when: ansible_distribution == "Ubuntu"
 
 # This is for old 14.04 versions, comment as version_compare has changed the name to version
 # in ansible 2.5 and in 2.9 has been removed
@@ -44,10 +54,20 @@
 
 - name: Add docker-ce  repo
   apt_repository: repo='deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_channel }}'
+  when: ansible_distribution == "Ubuntu"
 
-- name: Install docker
+- name: Add docker repo
+  apt_repository: repo='deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable' state=present update_cache=yes
+  when: ansible_distribution != "Ubuntu"
+
+- name: Install docker latest
   apt: name=docker-ce update_cache=yes
+  when: docker_version == "latest"
+
+- name: Install docker {{ docker_version }}
+  apt: name="docker-ce={{ docker_version }}" state=present force=yes
+  when: docker_version != "latest"
 
 - name: Install CRIU
-  apt: name=criu update_cache=yes state=present
-  when: ansible_distribution_major_version == "16"
+  apt: name=criu state=present
+  when: docker_install_criu and ansible_distribution_major_version == "16"

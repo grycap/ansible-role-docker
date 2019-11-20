@@ -16,11 +16,21 @@
       owner: root
       group: root
 
-  - name: Yum install Docker
+  - name: Yum install Docker latest
+    yum: name=epel-release state=latest
+
+  - name: Yum install Docker latest
     yum: name=docker-ce,epel-release state=latest update_cache=yes
+    when: docker_version == "latest"
+
+  - name: Install docker-ce {{ docker_version }}
+    yum: name=docker-ce-{{ docker_version }} state=installed update_cache=yes
+    when: docker_version != "latest"
 
   - name: Install CRIU
     yum: name=criu state=latest
+    when: docker_install_criu
+
   when: ansible_distribution_major_version|int >= 7
 
 - block:
@@ -28,7 +38,7 @@
   - name: EPEL
     yum: name=epel-release
 
-  - name: Install the docker rpm
+  - name: Install the docker rpm 1.7.1
     yum:
       name: https://yum.dockerproject.org/repo/main/centos/6/Packages/docker-engine-1.7.1-1.el6.x86_64.rpm
       state: present
