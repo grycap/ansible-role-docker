@@ -1,8 +1,3 @@
-- name: Get Kernel release
-  command: uname -r
-  register: KERNEL_RELEASE
-  changed_when: false
-
 - name: Install dependencies in Deb systems
   apt: name={{ item }} update_cache=yes cache_valid_time=3600 state=present
   with_items:
@@ -16,6 +11,11 @@
 
 # This is for old 14.04 versions, comment as version_compare has changed the name to version
 # in ansible 2.5 and in 2.9 has been removed
+
+#- name: Get Kernel release
+#  command: uname -r
+#  register: KERNEL_RELEASE
+#  changed_when: false
 
 #- name: Apt upgrade the kernel and install additional packages
 #  apt: name=linux-image-generic-lts-trusty update_cache=yes cache_valid_time=3600
