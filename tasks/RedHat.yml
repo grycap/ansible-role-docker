@@ -21,11 +21,11 @@
 
   - name: Yum install Docker latest
     yum: name=docker-ce,epel-release state=latest update_cache=yes
-    when: docker_version != "latest"
+    when: docker_version == "latest"
 
   - name: Install docker-ce {{ docker_version }}
     yum: name=docker-ce-{{ docker_version }} state=installed update_cache=yes
-    when: docker_version == "latest"
+    when: docker_version != "latest"
 
   - name: Install CRIU
     yum: name=criu state=latest
