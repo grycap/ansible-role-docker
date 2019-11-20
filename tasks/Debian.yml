@@ -65,7 +65,7 @@
   when: docker_version == "latest"
 
 - name: Install docker {{ docker_version }}
-  apt: name="docker-ce={{ docker_version }}" state=present force=yes
+  apt: name="docker-ce={{ docker_version }}" state=present force=yes update_cache=yes
   when: docker_version != "latest"
 
 - name: Install CRIU
