@@ -15,6 +15,8 @@ The variables that can be passed to this role and a brief description about them
 	docker_mirror_port: 5000
 	docker_opts: ""
 	docker_channel: "stable"
+	docker_version: "latest"
+	docker_install_criu: true
 
 Example Playbook
 ----------------
