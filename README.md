@@ -17,6 +17,7 @@ The variables that can be passed to this role and a brief description about them
 	docker_channel: "stable"
 	docker_version: "latest"
 	docker_install_criu: true
+	docker_compose_version: "1.25.5"
 
 Example Playbook
 ----------------

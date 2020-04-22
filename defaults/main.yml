@@ -7,3 +7,4 @@ docker_opts: ""
 docker_channel: "stable"
 docker_version: "latest"
 docker_install_criu: true
+docker_compose_version: "1.25.5"
