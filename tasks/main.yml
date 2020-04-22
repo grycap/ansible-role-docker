@@ -7,9 +7,6 @@
   - name: Include "{{ansible_os_family}}" tasks
     include: "{{ansible_os_family}}.yml"
 
-  - name: Install dependencies for docker management
-    pip: name=docker
-
   - name: Assure that /etc/default/docker exists
     file:
       path: /etc/default/docker
@@ -66,6 +63,9 @@
     meta: flush_handlers
 
   when: docker_output is failed
+
+- name: Install dependencies for docker management
+  pip: name=docker
 
 - name: Install docker compose
   get_url:
