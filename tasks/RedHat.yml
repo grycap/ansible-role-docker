@@ -16,7 +16,7 @@
       owner: root
       group: root
 
-  - name: Yum install Docker latest
+  - name: Yum install EPEL
     yum: name=epel-release state=latest
 
   - name: Yum install Docker latest
