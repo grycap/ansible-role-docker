@@ -2,7 +2,6 @@
   apt: 
     name: 
       - python-setuptools
-      - python-pip
       - apt-transport-https
       - ca-certificates
       - curl
