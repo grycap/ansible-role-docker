@@ -11,6 +11,15 @@
     cache_valid_time: 3600
     state: present
 
+- name: Install pip in Deb systems
+  apt: 
+    name: python-pip
+  when: ansible_os_family == "Debian" and not (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 20)
+
+- name: Install pip in in Ubuntu 20+
+  shell: wget https://bootstrap.pypa.io/get-pip.py && python2 get-pip.py warn=false creates=/usr/local/bin/pip2 chdir=/tmp
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 20
+
 - name: Install dependencies in Deb systems
   apt: name=gnupg2
   when: ansible_distribution != "Ubuntu"
@@ -18,30 +27,6 @@
 - name: Install dependencies in Deb systems
   apt: name=gnupg-agent
   when: ansible_distribution == "Ubuntu"
-
-# This is for old 14.04 versions, comment as version_compare has changed the name to version
-# in ansible 2.5 and in 2.9 has been removed
-
-#- name: Get Kernel release
-#  command: uname -r
-#  register: KERNEL_RELEASE
-#  changed_when: false
-
-#- name: Apt upgrade the kernel and install additional packages
-#  apt: name=linux-image-generic-lts-trusty update_cache=yes cache_valid_time=3600
-#  when: KERNEL_RELEASE.stdout | version_compare('3.13.0', '<=')
-
-#- name: restart the machine if kernel was upgraded
-#  command: shutdown -r now "Ansible updates triggered"
-#  async: 0
-#  poll: 0
-#  ignore_errors: true
-#  when: KERNEL_RELEASE.stdout | version_compare('3.13.0', '<=')
-
-#- name: waiting for machine to come back
-#  local_action: wait_for host={{IM_NODE_NET_0_IP}} state=started
-#  become: false
-#  when: KERNEL_RELEASE.stdout | version_compare('3.13.0', '<=')
 
 - name: Add Docker repo key
   apt_key: url="https://download.docker.com/linux/debian/gpg"
