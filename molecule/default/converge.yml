@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  tasks:
+    - name: "Include grycap.docker"
+      include_role:
+        name: "ansible-role-docker"

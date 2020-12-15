@@ -2,6 +2,7 @@
   command: docker info
   register: docker_output
   ignore_errors: True
+  changed_when: false
 
 - block:
   - name: Include "{{ansible_os_family}}" tasks
