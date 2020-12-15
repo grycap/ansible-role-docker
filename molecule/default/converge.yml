@@ -6,9 +6,8 @@
     ansible_python_interpreter: /usr/bin/python
   tasks:
     - name: Link python
-      command: ls /usr/bin/python || { ls /usr/bin/python3 && ln -s /usr/bin/python3 /usr/bin/python; } || { ls /usr/bin/python2 && ln -s /usr/bin/python2 /usr/bin/python; }
-      args:
-        creates: /usr/bin/python
+      raw: ls /usr/bin/python || { ls /usr/bin/python3 && ln -s /usr/bin/python3 /usr/bin/python; } || { ls /usr/bin/python2 && ln -s /usr/bin/python2 /usr/bin/python; }
+      changed_when: false
 
     - setup: 
  
