@@ -65,6 +65,14 @@
 
   when: docker_output is failed
 
+- name: Install pip and setuptools Py3
+  package: name=python3-setuptools,python3-pip
+  when: ansible_python.version.major > 2
+
+- name: Install pip and setuptools
+  package: name=python2-setuptools,python2-pip
+  when: ansible_python.version.major <= 2
+
 - name: Install dependencies for docker management
   pip: name=docker
 

@@ -11,15 +11,6 @@
     cache_valid_time: 3600
     state: present
 
-- name: Install pip in Deb systems
-  apt: 
-    name: python-pip
-  when: ansible_os_family == "Debian" and not (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 20)
-
-- name: Install pip in in Ubuntu 20+
-  shell: wget https://bootstrap.pypa.io/get-pip.py && python2 get-pip.py warn=false creates=/usr/local/bin/pip2 chdir=/tmp
-  when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 20
-
 - name: Install dependencies in Deb systems
   apt: name=gnupg2
   when: ansible_distribution != "Ubuntu"

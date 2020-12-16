@@ -2,19 +2,10 @@
   - name: Remove unofficial Docker packages
     yum: name=docker state=removed
 
-  - name: Create the /etc/yum.repos.d/docker.repo file
-    copy:
-      dest: /etc/yum.repos.d/docker.repo
-      content: |
-          [docker-ce-stable]
-          name=Docker CE Stable - $basearch
-          baseurl=https://download.docker.com/linux/centos/7/$basearch/stable
-          enabled=1
-          gpgcheck=1
-          gpgkey=https://download.docker.com/linux/centos/gpg
-      mode: 0644
-      owner: root
-      group: root
+  - name: Download docker-ce.repo
+    get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docker-ce.repo
 
   - name: Yum install EPEL
     yum: name=epel-release state=latest
@@ -44,6 +35,3 @@
       state: present
 
   when: ansible_distribution_major_version|int < 7
-
-- name: Install PIP
-  yum: name=python-pip state=present
