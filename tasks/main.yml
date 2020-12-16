@@ -59,7 +59,6 @@
     service: name=docker enabled=yes
     when: docker_start_enable_service
 
-
   - name: force all notified handlers to run at this point, not waiting for normal sync points
     meta: flush_handlers
 
@@ -70,7 +69,7 @@
   when: ansible_python.version.major > 2
 
 - name: Install pip and setuptools
-  package: name=python2-setuptools,python2-pip
+  package: name=python-setuptools,python-pip
   when: ansible_python.version.major <= 2
 
 - name: Link pip
