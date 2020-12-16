@@ -1,5 +1,5 @@
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Build Status](https://travis-ci.org/grycap/ansible-role-docker.svg?branch=master)](https://travis-ci.org/grycap/ansible-role-docker)
+[![CI](https://github.com/grycap/ansible-role-docker/workflows/CI/badge.svg)](https://github.com/grycap/ansible-role-docker/actions?query=workflow%3ACI)
 
 Docker Engine Role
 ===================
