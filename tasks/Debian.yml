@@ -1,7 +1,6 @@
 - name: Install dependencies in Deb systems
   apt: 
     name: 
-      - python-setuptools
       - apt-transport-https
       - ca-certificates
       - curl
