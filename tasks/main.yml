@@ -2,15 +2,17 @@
   command: docker info
   register: docker_output
   ignore_errors: True
+  changed_when: false
 
 - block:
   - name: Include "{{ansible_os_family}}" tasks
     include: "{{ansible_os_family}}.yml"
 
   - name: Assure that /etc/default/docker exists
-    file:
-      path: /etc/default/docker
-      state: touch
+    copy:
+      content: ""
+      dest: /etc/default/docker
+      force: no
 
   - name: Set DOCKER_OPTS
     lineinfile:
@@ -58,14 +60,30 @@
     service: name=docker enabled=yes
     when: docker_start_enable_service
 
-
   - name: force all notified handlers to run at this point, not waiting for normal sync points
     meta: flush_handlers
 
   when: docker_output is failed
 
-- name: Install dependencies for docker management
-  pip: name=docker
+- block:
+
+  - name: Install pip and setuptools Py3
+    package: name=python3-setuptools,python3-pip
+    when: ansible_python.version.major > 2
+
+  - name: Install pip and setuptools
+    package: name=python-setuptools,python-pip
+    when: ansible_python.version.major <= 2
+
+  - name: Link pip
+    shell: "{ ls /usr/bin/pip2 && ln -s /usr/bin/pip2 /usr/bin/pip; } || { ls /usr/bin/pip3 && ln -s /usr/bin/pip3 /usr/bin/pip; }"
+    args:
+      creates: /usr/bin/pip
+
+  - name: Install dependencies for docker management
+    pip: name=docker
+
+  when: docker_install_pip | bool
 
 - name: Install docker compose
   get_url:
