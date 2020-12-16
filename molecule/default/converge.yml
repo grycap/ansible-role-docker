@@ -9,6 +9,10 @@
       raw: ls /usr/bin/python || { ls /usr/bin/python2 && ln -s /usr/bin/python2 /usr/bin/python; } || { ls /usr/bin/python3 && ln -s /usr/bin/python3 /usr/bin/python; }
       changed_when: false
 
+    - name: Link pip
+      raw: ls /usr/bin/pip || { ls /usr/bin/pip2 && ln -s /usr/bin/pip2 /usr/bin/pip; } || { ls /usr/bin/pip3 && ln -s /usr/bin/pip3 /usr/bin/pip; }
+      changed_when: false
+
     - setup: 
  
     - name: "Include grycap.docker"
