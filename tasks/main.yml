@@ -9,9 +9,10 @@
     include: "{{ansible_os_family}}.yml"
 
   - name: Assure that /etc/default/docker exists
-    file:
-      path: /etc/default/docker
-      state: present
+    copy:
+      content: ""
+      dest: /etc/default/docker
+      force: no
 
   - name: Set DOCKER_OPTS
     lineinfile:
