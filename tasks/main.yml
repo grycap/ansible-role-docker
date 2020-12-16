@@ -73,6 +73,11 @@
   package: name=python2-setuptools,python2-pip
   when: ansible_python.version.major <= 2
 
+- name: Link pip
+  command: ls /usr/bin/pip || { ls /usr/bin/pip2 && ln -s /usr/bin/pip2 /usr/bin/pip; } || { ls /usr/bin/pip3 && ln -s /usr/bin/pip3 /usr/bin/pip; }
+  args:
+    creates: /usr/bin/pip
+
 - name: Install dependencies for docker management
   pip: name=docker
 
