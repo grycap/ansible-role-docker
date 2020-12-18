@@ -26,14 +26,25 @@
 
   - block:
 
+    - stat:
+        path: /etc/docker/daemon.json
+      register: daemon_json
+
     - name: Load values from daemon.json file
       slurp:
         src: /etc/docker/daemon.json
       register: docker_values
+      when: daemon_json.stat.exists
 
     - name: Append more key/values in daemon.json
       set_fact:
         docker_values: "{{ docker_values.content|b64decode|from_json | default([]) | combine(docker_config_values) }}"
+      when: daemon_json.stat.exists
+
+    - name: Set key/values
+      set_fact:
+        docker_values: "{{ docker_config_values }}"
+      when: not daemon_json.stat.exists
 
     - name: Set new values in daemon.json
       copy:
