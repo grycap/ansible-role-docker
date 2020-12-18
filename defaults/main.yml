@@ -9,3 +9,4 @@ docker_version: "latest"
 docker_install_criu: true
 docker_install_pip: true
 docker_compose_version: "1.25.5"
+docker_config_values: {}

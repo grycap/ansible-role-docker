@@ -1,3 +1,6 @@
+- name: Yum install EPEL
+  package: name=epel-release state=latest
+
 - block:
   - name: Remove unofficial Docker packages
     package: name=docker state=removed
@@ -6,9 +9,6 @@
     get_url:
       url: https://download.docker.com/linux/centos/docker-ce.repo
       dest: /etc/yum.repos.d/docker-ce.repo
-
-  - name: Yum install EPEL
-    package: name=epel-release state=latest
 
   - name: Yum install Docker latest
     package: name=docker-ce,epel-release state=latest update_cache=yes
@@ -25,9 +25,6 @@
   when: ansible_distribution_major_version|int >= 7
 
 - block:
-
-  - name: EPEL
-    package: name=epel-release
 
   - name: Install the docker rpm 1.7.1
     package:

@@ -19,6 +19,7 @@ The variables that can be passed to this role and a brief description about them
 	docker_install_criu: true
 	docker_install_pip: true
 	docker_compose_version: "1.25.5"
+	docker_config_values: {}
 
 Example Playbook
 ----------------

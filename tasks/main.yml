@@ -24,6 +24,26 @@
     notify:
     - restart docker
 
+  - block:
+
+    - name: Load values from daemon.json file
+      slurp:
+        src: /etc/docker/daemon.json
+      register: docker_values
+
+    - name: Append more key/values in daemon.json
+      set_fact:
+        docker_values: "{{ docker_values.content|b64decode|from_json | default([]) | combine(docker_config_values) }}"
+
+    - name: Set new values in daemon.json
+      copy:
+        content: "{{ docker_values | to_json }}"
+        dest: /etc/docker/daemon.json
+      notify:
+      - restart docker
+
+    when: docker_config_values
+
   # Enable to read the docker default values
   - stat:
       path: /lib/systemd/system/docker.service
