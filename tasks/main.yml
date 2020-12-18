@@ -26,6 +26,11 @@
 
   - block:
 
+    - name: Create /etc/docker dir
+      file:
+        path: /etc/docker
+        state: directory
+
     - stat:
         path: /etc/docker/daemon.json
       register: daemon_json
