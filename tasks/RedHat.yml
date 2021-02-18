@@ -1,6 +1,10 @@
 - name: Yum install EPEL
   package: name=epel-release state=latest
 
+- name: Remove problematic podman and buildah
+  yum: name=podman,buildah state=removed
+  when: ansible_distribution_major_version|int >= 8
+
 - block:
   - name: Remove unofficial Docker packages
     package: name=docker state=removed
