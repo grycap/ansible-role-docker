@@ -103,6 +103,14 @@
 
 - block:
 
+  - set_fact:
+      docker_package: docker
+    when: ansible_python_version is version('2.7.0', '>=')
+
+  - set_fact:
+      docker_package: docker-py
+    when: ansible_python_version is version('2.7.0', '<')
+
   - name: Install pip and setuptools Py3
     package: name=python3-setuptools,python3-pip
     when: ansible_python.version.major > 2
@@ -120,8 +128,8 @@
     pip: name=docker executable=pip3
     when: ansible_python.version.major > 2
 
-  - name: Install dependencies for docker management pip2
-    pip: name=docker executable=pip2
+  - name: Install {{docker_package}} for docker management pip2
+    pip: name="{{docker_package}}" executable=pip2
     when: ansible_python.version.major <= 2
 
   when: docker_install_pip | bool
