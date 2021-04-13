@@ -105,10 +105,12 @@
 
   - set_fact:
       docker_package: docker
+      docker_pkg_version: 4.4.4
     when: ansible_python_version is version('2.7.0', '>=')
 
   - set_fact:
       docker_package: docker-py
+      docker_pkg_version: latest
     when: ansible_python_version is version('2.7.0', '<')
 
   - name: Install pip and setuptools Py3
@@ -129,7 +131,7 @@
     when: ansible_python.version.major > 2
 
   - name: Install {{docker_package}} for docker management pip2
-    pip: name="{{docker_package}}" executable=pip2
+    pip: name="{{docker_package}}" executable=pip2 version={{docker_pkg_version}}
     when: ansible_python.version.major <= 2
 
   when: docker_install_pip | bool
