@@ -56,6 +56,11 @@
       dest: /etc/apt/sources.list.d/nvidia-docker.list
     register: apt_list
 
+  - name: Add nvidia-docker repo key
+    apt_key:
+      url: "https://nvidia.github.io/nvidia-docker/gpgkey"
+      state: present
+
   - name: Ubuntu apt update
     apt: update_cache=yes
     when: apt_list is changed
