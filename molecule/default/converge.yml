@@ -16,3 +16,4 @@
         name: "ansible-role-docker"
       vars:
         docker_config_values: {"log-driver": "json-file"}
+        docker_nvidia_support: true

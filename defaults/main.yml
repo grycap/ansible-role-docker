@@ -10,3 +10,11 @@ docker_install_criu: true
 docker_install_pip: true
 docker_compose_version: "1.25.5"
 docker_config_values: {}
+# Nvidia docker options to add in the docker.json file
+docker_nvidia_support: false
+docker_nvidia_options:
+  default-runtime: nvidia
+  runtimes:
+    nvidia:
+      path: /usr/bin/nvidia-container-runtime
+      runtimeArgs: []
