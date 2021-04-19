@@ -69,6 +69,6 @@
     apt: name=nvidia-docker2
 
   - set_fact:
-      docker_options: "{{ docker_options | combine(docker_nvidia_options) }}"
+      docker_config_values: "{{ docker_config_values | combine(docker_nvidia_options) }}"
 
   when: docker_nvidia_support 
