@@ -22,11 +22,11 @@ The variables that can be passed to this role and a brief description about them
 	docker_config_values: {}
 	docker_nvidia_support: false
 	docker_nvidia_options:
-	default-runtime: nvidia
-	runtimes:
-		nvidia:
-		path: /usr/bin/nvidia-container-runtime
-		runtimeArgs: []
+		default-runtime: nvidia
+		runtimes:
+			nvidia:
+				path: /usr/bin/nvidia-container-runtime
+				runtimeArgs: []
 
 Example Playbook
 ----------------
