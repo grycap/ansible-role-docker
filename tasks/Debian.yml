@@ -11,7 +11,7 @@
     state: present
 
 - name: Install dependencies in Deb systems
-  apt: name=gnupg2
+  apt: name=gnupg2,iptables
   when: ansible_distribution != "Ubuntu"
 
 - name: Install dependencies in Deb systems
