@@ -15,7 +15,7 @@
       dest: /etc/yum.repos.d/docker-ce.repo
 
   - name: Yum install Docker latest
-    package: name=docker-ce,epel-release state=latest update_cache=yes
+    package: name=docker-ce state=latest update_cache=yes
     when: docker_version == "latest"
 
   - name: Install docker-ce {{ docker_version }}
