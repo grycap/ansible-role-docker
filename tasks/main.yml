@@ -17,6 +17,11 @@
   when: item in docker_output.stdout
 
 - block:
+  - name: Install iptables
+    package:
+      name: iptables
+      state: present
+
   - name: Include "{{ansible_os_family}}" tasks
     include: "{{ansible_os_family}}.yml"
 
