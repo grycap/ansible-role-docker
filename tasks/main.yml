@@ -1,8 +1,20 @@
-- name: Check docker existence
-  command: docker info
+- name: Check docker version
+  shell: docker -v | cut -d ' ' -f 3 | cut -d ',' -f 1
   register: docker_output
   ignore_errors: True
   changed_when: false
+
+- debug: msg="Docker version installed = {{ docker_output.stdout }}"
+
+- name: Set docker to be installed
+  set_fact:
+    docker_install: true
+
+- name: Chek docker compatible versions
+  set_fact:
+    docker_install: false
+  with_items: "{{ docker_compatible_versions }}"
+  when: item in docker_output.stdout
 
 - block:
   - name: Include "{{ansible_os_family}}" tasks
@@ -53,7 +65,7 @@
 
     - name: Set new values in daemon.json
       copy:
-        content: "{{ docker_values | to_json }}"
+        content: "{{ docker_values | to_nice_json(indent=2) }}"
         dest: /etc/docker/daemon.json
       notify:
       - restart docker
@@ -99,7 +111,7 @@
   - name: force all notified handlers to run at this point, not waiting for normal sync points
     meta: flush_handlers
 
-  when: docker_output is failed
+  when: docker_install
 
 - block:
 
