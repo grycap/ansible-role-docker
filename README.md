@@ -16,6 +16,9 @@ The variables that can be passed to this role and a brief description about them
 	docker_opts: ""
 	docker_channel: "stable"
 	docker_version: "latest"
+	# Docker comaptible versions that if are installed docker will not be reinstalled
+	# ['17.03.', '18.06.', '18.09.', '19.03.']
+	docker_compatible_versions: []
 	docker_install_criu: true
 	docker_install_pip: true
 	docker_compose_version: "1.25.5"
