@@ -70,7 +70,7 @@
       notify:
       - restart docker
 
-    when: docker_config_values
+    when: docker_config_values != {}
 
   # Enable to read the docker default values
   - stat:
