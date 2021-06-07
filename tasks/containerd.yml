@@ -1,18 +1,3 @@
-- name: Create /etc/modules-load.d/containerd.conf
-  register: containerd_json
-  copy:
-    content: |
-      overlay
-      br_netfilter
-    dest: /etc/modules-load.d/containerd.conf
-
-- name: Make modprobes
-  command: modprobe {{item}}
-  with_items:
-    - overlay
-    - br_netfilter
-  when: containerd_json is changed
-
 - name: Install containerd
   include_tasks: "{{ansible_os_family}}.yml"
 
