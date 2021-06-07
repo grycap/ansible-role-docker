@@ -1,0 +1,156 @@
+- name: Check docker version
+  shell: docker -v | cut -d ' ' -f 3 | cut -d ',' -f 1
+  register: docker_output
+  ignore_errors: True
+  changed_when: false
+
+- debug: msg="Docker version installed = {{ docker_output.stdout }}"
+
+- name: Set docker to be installed
+  set_fact:
+    docker_install: true
+
+- name: Chek docker compatible versions
+  set_fact:
+    docker_install: false
+  with_items: "{{ docker_compatible_versions }}"
+  when: item in docker_output.stdout
+
+- block:
+  - name: Include "{{ansible_os_family}}" tasks
+    include: "{{ansible_os_family}}.yml"
+
+  - name: Assure that /etc/default/docker exists
+    copy:
+      content: ""
+      dest: /etc/default/docker
+      force: no
+
+  - name: Set DOCKER_OPTS
+    lineinfile:
+      dest: /etc/default/docker
+      regexp: 'DOCKER_OPTS='
+      line: 'DOCKER_OPTS="{{docker_opts}}"'
+      create: yes
+    when: docker_opts != ""
+    notify:
+    - restart docker
+
+  - block:
+
+    - name: Create /etc/docker dir
+      file:
+        path: /etc/docker
+        state: directory
+
+    - stat:
+        path: /etc/docker/daemon.json
+      register: daemon_json
+
+    - name: Load values from daemon.json file
+      slurp:
+        src: /etc/docker/daemon.json
+      register: docker_values
+      when: daemon_json.stat.exists
+
+    - name: Append more key/values in daemon.json
+      set_fact:
+        docker_values: "{{ docker_values.content|b64decode|from_json | default([]) | combine(docker_config_values) }}"
+      when: daemon_json.stat.exists
+
+    - name: Set key/values
+      set_fact:
+        docker_values: "{{ docker_config_values }}"
+      when: not daemon_json.stat.exists
+
+    - name: Set new values in daemon.json
+      copy:
+        content: "{{ docker_values | to_nice_json(indent=2) }}"
+        dest: /etc/docker/daemon.json
+      notify:
+      - restart docker
+
+    when: docker_config_values != {}
+
+  # Enable to read the docker default values
+  - stat:
+      path: /lib/systemd/system/docker.service
+    register: docker_service
+
+  - lineinfile:
+      dest: /lib/systemd/system/docker.service
+      insertbefore: '^ExecStart='
+      line: 'EnvironmentFile=/etc/default/docker'
+    notify:
+    - reload systemctl
+    - restart docker
+    when: docker_service.stat.exists and
+          ((ansible_os_family == "RedHat" and ansible_distribution_major_version == "7") or
+          (ansible_os_family == "Debian"))
+
+  - lineinfile:
+      dest: /lib/systemd/system/docker.service
+      regexp: '(?!.*\$DOCKER_OPTS.*)(^ExecStart=.*)'
+      line: '\1 $DOCKER_OPTS'
+      backrefs: yes
+    notify:
+    - reload systemctl
+    - restart docker
+    when: docker_service.stat.exists and
+          ((ansible_os_family == "RedHat" and ansible_distribution_major_version == "7") or
+          (ansible_os_family == "Debian"))
+
+  - name: start docker
+    service: name=docker state=started
+    when: docker_start_service
+
+  - name: enable docker service
+    service: name=docker enabled=yes
+    when: docker_start_enable_service
+
+  - name: force all notified handlers to run at this point, not waiting for normal sync points
+    meta: flush_handlers
+
+  when: docker_install
+
+- block:
+
+  - set_fact:
+      docker_package: docker
+      docker_pkg_version: 4.4.4
+    when: ansible_python_version is version('2.7.0', '>=')
+
+  - set_fact:
+      docker_package: docker-py
+      docker_pkg_version: latest
+    when: ansible_python_version is version('2.7.0', '<')
+
+  - name: Install pip and setuptools Py3
+    package: name=python3-setuptools,python3-pip
+    when: ansible_python.version.major > 2
+
+  - name: Install pip and setuptools
+    package: name=python-setuptools,python-pip
+    when: ansible_python.version.major <= 2
+
+  - name: Link pip
+    shell: "{ ls /usr/bin/pip2 && ln -s /usr/bin/pip2 /usr/bin/pip; } || { ls /usr/bin/pip3 && ln -s /usr/bin/pip3 /usr/bin/pip; }"
+    args:
+      creates: /usr/bin/pip
+
+  - name: Install dependencies for docker management pip3
+    pip: name=docker executable=pip3
+    when: ansible_python.version.major > 2
+
+  - name: Install {{docker_package}} for docker management pip2
+    pip: name="{{docker_package}}" executable=pip2 version={{docker_pkg_version}}
+    when: ansible_python.version.major <= 2
+
+  when: docker_install_pip | bool
+
+- name: Install docker compose
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+  when: docker_compose_version != ""

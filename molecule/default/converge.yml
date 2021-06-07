@@ -10,7 +10,11 @@
       changed_when: false
 
     - setup: 
- 
+
+    - set_fact:
+        docker_containerd_only: true
+      when: lookup('env','CONTAINERD') != "1"
+
     - name: "Include grycap.docker"
       include_role:
         name: "ansible-role-docker"

@@ -1,0 +1,49 @@
+- name: Create /etc/modules-load.d/containerd.conf
+  register: containerd_json
+  copy:
+    content: |
+      overlay
+      br_netfilter
+    dest: /etc/modules-load.d/containerd.conf
+
+- name: Make modprobes
+  command: modprobe {{item}}
+  with_items:
+    - overlay
+    - br_netfilter
+  when: containerd_json is changed
+
+- name: Install containerd
+  include_tasks: "{{ansible_os_family}}.yml"
+
+- name: Create /etc/containerd
+  file:
+    path: /etc/containerd
+    state: directory
+
+- name: Create /etc/containerd/config.toml
+  register: containerd_config
+  shell: containerd config default > /etc/containerd/config.toml
+  args:
+    creates: /etc/containerd/config.toml
+
+- name: Set systemd cgroup driver
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: '(\s+)\[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options\](\s+)\['
+    replace: '\1[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]\1  SystemdCgroup = true\2['
+
+- name: restart containerd
+  service:
+    name: containerd
+    state: restarted
+  when: containerd_config is changed
+
+- name: Change runtime to nvidia-container-runtime
+  lineinfile:
+    path: /etc/containerd/config.toml
+    regexp: '^(.*)runtime = "runc"(.*)$'
+    line: '\1runtime = "nvidia-container-runtime"\2'
+    backrefs: yes
+  notify: restart containerd
+  when: docker_nvidia_support 

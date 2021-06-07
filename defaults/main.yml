@@ -21,3 +21,5 @@ docker_nvidia_options:
     nvidia:
       path: /usr/bin/nvidia-container-runtime
       runtimeArgs: []
+# Installs containerd only, not full docker
+docker_containerd_only: false
