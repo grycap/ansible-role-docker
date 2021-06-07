@@ -27,5 +27,5 @@
       changed_when: false
 
     - command: docker ps
-      when: lookup('env','CONTAINERD') == "1"
+      when: lookup('env','CONTAINERD') == "0"
       changed_when: false
