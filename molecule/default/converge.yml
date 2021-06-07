@@ -13,7 +13,7 @@
 
     - set_fact:
         docker_containerd_only: true
-      when: lookup('env','CONTAINERD') != "1"
+      when: lookup('env','CONTAINERD') == "1"
 
     - name: "Include grycap.docker"
       include_role:
@@ -21,3 +21,11 @@
       vars:
         docker_config_values: {"log-driver": "json-file"}
         docker_nvidia_support: true
+
+    - command: ctr containers list
+      when: lookup('env','CONTAINERD') == "1"
+      changed_when: false
+
+    - command: docker ps
+      when: lookup('env','CONTAINERD') == "1"
+      changed_when: false
