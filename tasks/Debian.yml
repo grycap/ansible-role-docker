@@ -97,4 +97,5 @@
   - name: Install nvidia-docker2 package
     apt: name={{nvidia_package_name}}
 
-  when: docker_nvidia_support 
+  when: docker_nvidia_support
+  
