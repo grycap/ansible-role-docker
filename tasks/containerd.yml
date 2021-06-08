@@ -18,7 +18,7 @@
     path: /etc/containerd/config.toml
     regexp: '(\s+)\[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options\](\s+)\['
     replace: '\1[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]\1  SystemdCgroup = true\2['
-  notify: restart containerd
+  register: containerd_config
 
 - name: Change runtime to nvidia-container-runtime
   lineinfile:
@@ -26,8 +26,13 @@
     regexp: '^(.*)runtime = "runc"(.*)$'
     line: '\1runtime = "nvidia-container-runtime"\2'
     backrefs: yes
-  notify: restart containerd
   when: docker_nvidia_support 
+
+- name: restart containerd
+  service:
+    name: containerd
+    state: restarted
+  when: containerd_config is changed
 
 - name: start docker
   service: name=containerd state=started enabled=yes
