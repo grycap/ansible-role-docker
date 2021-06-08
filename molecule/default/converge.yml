@@ -17,6 +17,11 @@
         cache_valid_time: 3600
       when: ansible_os_family == "Debian"
 
+    # Only test nvidia support in Debian systems
+    - set_fact:
+        docker_nvidia_support: true
+      when: ansible_os_family == "Debian"
+
     - set_fact:
         docker_containerd_only: true
       when: lookup('env','CONTAINERD') == "1"
@@ -26,7 +31,6 @@
         name: "ansible-role-docker"
       vars:
         docker_config_values: {"log-driver": "json-file"}
-        docker_nvidia_support: true
 
     - command: ctr containers list
       when: lookup('env','CONTAINERD') == "1"
