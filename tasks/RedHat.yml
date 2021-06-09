@@ -55,9 +55,10 @@
       docker_config_values: "{{ docker_config_values | combine(docker_nvidia_options) }}"
     when: not docker_containerd_only
 
+  # for some reason installing nvidia-container-runtime without version does not work
   - set_fact:
       nvidia_repo_name: nvidia-container-runtime
-      nvidia_package_name: nvidia-container-runtime
+      nvidia_package_name: nvidia-container-runtime-3.5.0
     when: docker_containerd_only
 
   - name: Download {{nvidia_repo_name}} yum repo
