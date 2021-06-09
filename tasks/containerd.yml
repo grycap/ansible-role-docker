@@ -22,7 +22,7 @@
 
 - block:
 
-  - name: Change runtime to nvidia-container-runtime
+  - name: Add nvidia runtime
     blockinfile:
       path: /etc/containerd/config.toml
       insertbefore: '\[plugins\."io\.containerd\.grpc\.v1\.cri"\.cni\]'

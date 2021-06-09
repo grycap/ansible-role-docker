@@ -20,6 +20,5 @@ galaxy_info:
    - docker
 
 dependencies:
-- role: 'nvidia.nvidia_driver'
-  nvidia_driver_skip_reboot: yes
+- role: 'grycap.nvidia_driver'
   when: docker_nvidia_support
