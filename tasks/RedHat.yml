@@ -30,7 +30,7 @@
     package: name=criu state=latest
     when: docker_install_criu
 
-  when: not docker_containerd_only
+  when: not docker_containerd_only | bool
 
 - block:
 
@@ -44,7 +44,7 @@
       state: absent
     when: containerd_installed is changed
 
-  when: docker_containerd_only
+  when: docker_containerd_only | bool
 
 
 - block:
@@ -53,13 +53,13 @@
       nvidia_repo_name: nvidia-docker
       nvidia_package_name: nvidia-docker2
       docker_config_values: "{{ docker_config_values | combine(docker_nvidia_options) }}"
-    when: not docker_containerd_only
+    when: not docker_containerd_only | bool
 
   # for some reason installing nvidia-container-runtime without version does not work
   - set_fact:
       nvidia_repo_name: nvidia-container-runtime
       nvidia_package_name: nvidia-container-runtime-3.5.0
-    when: docker_containerd_only
+    when: docker_containerd_only | bool
 
   - name: Download {{nvidia_repo_name}} yum repo
     get_url:
@@ -74,4 +74,4 @@
   - name: Install {{nvidia_package_name}} package
     yum: name={{nvidia_package_name}}
 
-  when: docker_nvidia_support 
+  when: docker_nvidia_support | bool

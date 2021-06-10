@@ -43,7 +43,7 @@
       regexp: '^(.*)runtime(.*) = "runc"(.*)$'
       replace: '\1runtime\2 = "nvidia"\3'
 
-  when: docker_nvidia_support 
+  when: docker_nvidia_support | bool
 
 - name: restart containerd
   service:

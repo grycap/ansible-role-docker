@@ -49,7 +49,7 @@
     apt: name=criu state=present
     when: docker_install_criu and ansible_distribution_major_version == "16"
 
-  when: not docker_containerd_only
+  when: not docker_containerd_only | bool
 
 - block:
 
@@ -63,7 +63,7 @@
       state: absent
     when: containerd_installed is changed
 
-  when: docker_containerd_only
+  when: docker_containerd_only | bool
 
 
 - block:
@@ -72,12 +72,12 @@
       nvidia_repo_name: nvidia-docker
       nvidia_package_name: nvidia-docker2
       docker_config_values: "{{ docker_config_values | combine(docker_nvidia_options) }}"
-    when: not docker_containerd_only
+    when: not docker_containerd_only | bool
 
   - set_fact:
       nvidia_repo_name: nvidia-container-runtime
       nvidia_package_name: nvidia-container-runtime
-    when: docker_containerd_only
+    when: docker_containerd_only | bool
 
   - name: Download {{nvidia_repo_name}} apt list
     get_url:
@@ -97,5 +97,5 @@
   - name: Install nvidia-docker2 package
     apt: name={{nvidia_package_name}}
 
-  when: docker_nvidia_support
+  when: docker_nvidia_support | bool
   
