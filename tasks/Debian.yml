@@ -35,30 +35,59 @@
   apt_repository: repo='deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable' state=present update_cache=yes
   when: ansible_distribution != "Ubuntu"
 
-- name: Install docker latest
-  apt: name=docker-ce update_cache=yes
-  when: docker_version == "latest"
+- block:
 
-- name: Install docker {{ docker_version }}
-  apt: name="docker-ce={{ docker_version }}" state=present force=yes update_cache=yes
-  when: docker_version != "latest"
+  - name: Install docker latest
+    apt: name=docker-ce update_cache=yes
+    when: docker_version == "latest"
 
-- name: Install CRIU
-  apt: name=criu state=present
-  when: docker_install_criu and ansible_distribution_major_version == "16"
+  - name: Install docker {{ docker_version }}
+    apt: name="docker-ce={{ docker_version }}" state=present force=yes update_cache=yes
+    when: docker_version != "latest"
+
+  - name: Install CRIU
+    apt: name=criu state=present
+    when: docker_install_criu and ansible_distribution_major_version == "16"
+
+  when: not docker_containerd_only | bool
+
+- block:
+
+  - name: Install containerd.io
+    register: containerd_installed
+    apt: name=containerd.io state=present
+
+  - name: Delete initial /etc/containerd/config.toml file
+    file:
+      path: /etc/containerd/config.toml
+      state: absent
+    when: containerd_installed is changed
+
+  when: docker_containerd_only | bool
 
 
 - block:
 
-  - name: Download nvidia-docker apt list
+  - set_fact:
+      nvidia_repo_name: nvidia-docker
+      nvidia_package_name: nvidia-docker2
+      docker_config_values: "{{ docker_config_values | combine(docker_nvidia_options) }}"
+    when: not docker_containerd_only | bool
+
+  - set_fact:
+      nvidia_repo_name: nvidia-container-runtime
+      nvidia_package_name: nvidia-container-runtime
+    when: docker_containerd_only | bool
+
+  - name: Download {{nvidia_repo_name}} apt list
     get_url:
-      url: https://nvidia.github.io/nvidia-docker/{{ansible_distribution | lower}}{{ansible_distribution_version}}/nvidia-docker.list
-      dest: /etc/apt/sources.list.d/nvidia-docker.list
+      url: https://nvidia.github.io/{{nvidia_repo_name}}/{{ansible_distribution | lower}}{{ansible_distribution_version}}/{{nvidia_repo_name}}.list
+      dest: /etc/apt/sources.list.d/{{nvidia_repo_name}}.list
     register: apt_list
 
   - name: Add nvidia-docker repo key
     apt_key:
-      url: "https://nvidia.github.io/nvidia-docker/gpgkey"
+      url: "https://nvidia.github.io/{{nvidia_repo_name}}/gpgkey"
       state: present
 
   - name: Ubuntu apt update
@@ -66,9 +95,7 @@
     when: apt_list is changed
 
   - name: Install nvidia-docker2 package
-    apt: name=nvidia-docker2
+    apt: name={{nvidia_package_name}}
 
-  - set_fact:
-      docker_config_values: "{{ docker_config_values | combine(docker_nvidia_options) }}"
-
-  when: docker_nvidia_support 
+  when: docker_nvidia_support | bool
+  

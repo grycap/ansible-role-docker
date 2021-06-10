@@ -8,14 +8,15 @@
   yum: name=podman,buildah state=removed
   when: ansible_distribution_major_version|int >= 8
 
-- block:
-  - name: Remove unofficial Docker packages
-    package: name=docker state=removed
+- name: Remove unofficial Docker packages
+  package: name=docker state=removed
 
-  - name: Download docker-ce.repo
-    get_url:
-      url: https://download.docker.com/linux/centos/docker-ce.repo
-      dest: /etc/yum.repos.d/docker-ce.repo
+- name: Download docker-ce.repo
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+
+- block:
 
   - name: Yum install Docker latest
     package: name=docker-ce state=latest update_cache=yes
@@ -29,33 +30,48 @@
     package: name=criu state=latest
     when: docker_install_criu
 
-  when: ansible_distribution_major_version|int >= 7
+  when: not docker_containerd_only | bool
 
 - block:
 
-  - name: Install the docker rpm 1.7.1
-    package:
-      name: https://yum.dockerproject.org/repo/main/centos/6/Packages/docker-engine-1.7.1-1.el6.x86_64.rpm
-      state: present
+  - name: Install containerd.io
+    register: containerd_installed
+    yum: name=containerd.io state=installed update_cache=yes
 
-  when: ansible_distribution_major_version|int < 7
+  - name: Delete initial /etc/containerd/config.toml file
+    file:
+      path: /etc/containerd/config.toml
+      state: absent
+    when: containerd_installed is changed
+
+  when: docker_containerd_only | bool
+
 
 - block:
 
-  - name: Download nvidia-docker yum repo
+  - set_fact:
+      nvidia_repo_name: nvidia-docker
+      nvidia_package_name: nvidia-docker2
+      docker_config_values: "{{ docker_config_values | combine(docker_nvidia_options) }}"
+    when: not docker_containerd_only | bool
+
+  # for some reason installing nvidia-container-runtime without version does not work
+  - set_fact:
+      nvidia_repo_name: nvidia-container-runtime
+      nvidia_package_name: nvidia-container-runtime-3.5.0
+    when: docker_containerd_only | bool
+
+  - name: Download {{nvidia_repo_name}} yum repo
     get_url:
-      url: https://nvidia.github.io/nvidia-docker/{{ansible_distribution | lower}}{{ansible_distribution_major_version}}/nvidia-docker.repo
-      dest: /etc/yum.repos.d/nvidia-docker.repo
+      url: https://nvidia.github.io/{{nvidia_repo_name}}/{{ansible_distribution | lower}}{{ansible_distribution_major_version}}/{{nvidia_repo_name}}.repo
+      dest: /etc/yum.repos.d/{{nvidia_repo_name}}.repo
 
   - name: Add nvidia repo key
     rpm_key:
       state: present
-      key: https://nvidia.github.io/nvidia-docker/gpgkey
+      key: https://nvidia.github.io/{{nvidia_repo_name}}/gpgkey
 
-  - name: Install nvidia-docker2 package
-    yum: name=nvidia-docker2
+  - name: Install {{nvidia_package_name}} package
+    yum: name={{nvidia_package_name}}
 
-  - set_fact:
-      docker_config_values: "{{ docker_config_values | combine(docker_nvidia_options) }}"
-
-  when: docker_nvidia_support 
+  when: docker_nvidia_support | bool
