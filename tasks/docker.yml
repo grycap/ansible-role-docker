@@ -142,6 +142,10 @@
     pip: name=docker executable=pip3
     when: ansible_python.version.major > 2
 
+  - name: Install websocket-client version 0.59.0 for docker management pip2
+    pip: name=websocket-client executable=pip2 version=0.59.0
+    when: ansible_python.version.major <= 2
+
   - name: Install {{docker_package}} for docker management pip2
     pip: name="{{docker_package}}" executable=pip2 version={{docker_pkg_version}}
     when: ansible_python.version.major <= 2
