@@ -1,0 +1,55 @@
+- name: Install containerd
+  include_tasks: "{{ansible_os_family}}.yml"
+
+- name: Create /etc/containerd
+  file:
+    path: /etc/containerd
+    state: directory
+
+- name: Create /etc/containerd/config.toml
+  register: containerd_config
+  shell: containerd config default > /etc/containerd/config.toml
+  args:
+    creates: /etc/containerd/config.toml
+  notify: restart containerd
+
+- name: Set systemd cgroup driver
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: '(\s+)\[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options\](\s+)\['
+    replace: '\1[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]\1  SystemdCgroup = true\2['
+  register: containerd_config
+
+- block:
+
+  - name: Add nvidia runtime
+    blockinfile:
+      path: /etc/containerd/config.toml
+      insertbefore: '\[plugins\."io\.containerd\.grpc\.v1\.cri"\.cni\]'
+      block: |
+          # Add Nvidia runtime
+                    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
+                        privileged_without_host_devices = false
+                        runtime_engine = ""
+                        runtime_root = ""
+                        runtime_type = "io.containerd.runc.v1"
+                        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
+                          BinaryName = "/usr/bin/nvidia-container-runtime"
+                          SystemdCgroup = true
+ 
+  - name: Change runtime to nvidia
+    replace:
+      path: /etc/containerd/config.toml
+      regexp: '^(.*)runtime(.*) = "runc"(.*)$'
+      replace: '\1runtime\2 = "nvidia"\3'
+
+  when: docker_nvidia_support | bool
+
+- name: restart containerd
+  service:
+    name: containerd
+    state: restarted
+  when: containerd_config is changed
+
+- name: start docker
+  service: name=containerd state=started enabled=yes

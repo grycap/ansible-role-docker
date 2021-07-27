@@ -30,6 +30,8 @@ The variables that can be passed to this role and a brief description about them
 			nvidia:
 				path: /usr/bin/nvidia-container-runtime
 				runtimeArgs: []
+	# Installs containerd only, not full docker
+	docker_containerd_only: false
 
 Example Playbook
 ----------------

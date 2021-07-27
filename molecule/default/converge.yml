@@ -4,16 +4,44 @@
   gather_facts: false
   vars: 
     ansible_python_interpreter: /usr/bin/python
+    nvidia_driver_skip_reboot: yes
   tasks:
     - name: Link python
       raw: ls /usr/bin/python || { ls /usr/bin/python2 && ln -s /usr/bin/python2 /usr/bin/python; } || { ls /usr/bin/python3 && ln -s /usr/bin/python3 /usr/bin/python; }
       changed_when: false
 
     - setup: 
- 
+
+    - name: Only run "update_cache=yes" if the last one is more than 3600 seconds ago
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+
+    - name: Install initramfs-tools
+      apt:
+        name: initramfs-tools
+      when: ansible_os_family == "Debian"
+
+    # Only test nvidia support in Debian systems
+    - set_fact:
+        docker_nvidia_support: true
+      when: ansible_os_family == "Debian"
+
+    - set_fact:
+        docker_containerd_only: true
+      when: lookup('env','CONTAINERD') == "1"
+
     - name: "Include grycap.docker"
       include_role:
         name: "ansible-role-docker"
       vars:
         docker_config_values: {"log-driver": "json-file"}
-        docker_nvidia_support: true
+
+    - command: ctr containers list
+      when: lookup('env','CONTAINERD') == "1"
+      changed_when: false
+
+    - command: docker ps
+      when: lookup('env','CONTAINERD') == "0"
+      changed_when: false

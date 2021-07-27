@@ -10,14 +10,15 @@ galaxy_info:
     - stretch
   - name: Ubuntu
     versions:
-    - trusty
     - xenial
     - bionic
   - name: EL
     versions:
+    - 8
     - 7
-    - 6
   galaxy_tags:
    - docker
 
-dependencies: []
+dependencies:
+- role: 'grycap.nvidia_driver'
+  when: docker_nvidia_support
