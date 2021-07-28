@@ -19,11 +19,11 @@
 - block:
 
   - name: Yum install Docker latest
-    package: name=docker-ce state=latest update_cache=yes
+    package: name=docker-ce state=latest update_cache=yes 
     when: docker_version == "latest"
 
   - name: Install docker-ce {{ docker_version }}
-    package: name=docker-ce-{{ docker_version }} state=installed update_cache=yes
+    yum: name=docker-ce-{{ docker_version }} state=installed update_cache=yes allow_downgrade=yes
     when: docker_version != "latest"
 
   - name: Install CRIU
