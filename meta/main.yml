@@ -1,4 +1,6 @@
 galaxy_info:
+  role_name: docker
+  namespace: grycap
   author: amcaar@i3m.upv.es
   description: Install docker engine
   company: GRyCAP UPV
