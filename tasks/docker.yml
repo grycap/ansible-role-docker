@@ -37,6 +37,9 @@
     - restart docker
 
   - set_fact:
+      docker_config_values_all: "{{ docker_config_values }}"
+
+  - set_fact:
       docker_config_values_all: "{{ docker_config_values | combine(docker_nvidia_options) }}"
     when: docker_nvidia_support | bool
 
