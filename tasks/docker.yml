@@ -36,6 +36,10 @@
     notify:
     - restart docker
 
+  - set_fact:
+      docker_config_values_all: "{{ docker_config_values | combine(docker_nvidia_options) }}"
+    when: docker_nvidia_support | bool
+
   - block:
 
     - name: Create /etc/docker dir
@@ -55,12 +59,12 @@
 
     - name: Append more key/values in daemon.json
       set_fact:
-        docker_values: "{{ docker_values.content|b64decode|from_json | default([]) | combine(docker_config_values) }}"
+        docker_values: "{{ docker_values.content|b64decode|from_json | default([]) | combine(docker_config_values_all) }}"
       when: daemon_json.stat.exists
 
     - name: Set key/values
       set_fact:
-        docker_values: "{{ docker_config_values }}"
+        docker_values: "{{ docker_config_values_all }}"
       when: not daemon_json.stat.exists
 
     - name: Set new values in daemon.json
@@ -70,7 +74,7 @@
       notify:
       - restart docker
 
-    when: docker_config_values != {}
+    when: docker_config_values_all != {}
 
   # Enable to read the docker default values
   - stat:

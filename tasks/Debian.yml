@@ -71,7 +71,6 @@
   - set_fact:
       nvidia_repo_name: nvidia-docker
       nvidia_package_name: nvidia-docker2
-      docker_config_values: "{{ docker_config_values | combine(docker_nvidia_options) }}"
     when: not docker_containerd_only | bool
 
   - set_fact:
