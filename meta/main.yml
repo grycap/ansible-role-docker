@@ -22,5 +22,5 @@ galaxy_info:
    - docker
 
 dependencies:
-- role: 'grycap.nvidia_driver'
+- role: 'NVIDIA.nvidia_driver'
   when: docker_nvidia_support
