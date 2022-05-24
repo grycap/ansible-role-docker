@@ -51,5 +51,5 @@
     state: restarted
   when: containerd_config is changed
 
-- name: start docker
+- name: start containerd
   service: name=containerd state=started enabled=yes
