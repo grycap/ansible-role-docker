@@ -45,3 +45,21 @@
     - command: docker ps
       when: lookup('env','CONTAINERD') == "0"
       changed_when: false
+
+    - slurp: src=/etc/docker/daemon.json
+      register: slurpfile
+      when: ansible_os_family == "Debian" and lookup('env','CONTAINERD') == "0"
+
+    - assert:
+        that:
+          - "'nvidia-container-runtime' in slurpfile['content'] | b64decode"
+      when: ansible_os_family == "Debian" and lookup('env','CONTAINERD') == "0"
+
+    - slurp: src=/etc/containerd/config.toml
+      register: slurpfile
+      when: ansible_os_family == "Debian" and lookup('env','CONTAINERD') == "1"
+
+    - assert:
+        that:
+          - "'containerd.runtimes.nvidia' in slurpfile['content'] | b64decode"
+      when: ansible_os_family == "Debian" and lookup('env','CONTAINERD') == "1"

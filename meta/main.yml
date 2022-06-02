@@ -23,4 +23,4 @@ galaxy_info:
 
 dependencies:
 - role: 'NVIDIA.nvidia_driver'
-  when: docker_nvidia_support
+  when: docker_nvidia_support | bool
