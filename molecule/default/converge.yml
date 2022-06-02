@@ -45,3 +45,11 @@
     - command: docker ps
       when: lookup('env','CONTAINERD') == "0"
       changed_when: false
+
+    - set_fact:
+        docker_json: "{{lookup('file', '/etc/docker/daemon.json') }}"
+      when: ansible_os_family == "Debian"
+
+    - assert:
+        that:
+          - "'nvidia-container-runtime' in docker_json"
