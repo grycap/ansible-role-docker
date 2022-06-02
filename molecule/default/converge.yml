@@ -48,9 +48,18 @@
 
     - set_fact:
         docker_json: "{{lookup('file', '/etc/docker/daemon.json') }}"
-      when: ansible_os_family == "Debian"
+      when: ansible_os_family == "Debian" and not docker_containerd_only | bool
 
     - assert:
         that:
           - "'nvidia-container-runtime' in docker_json"
-      when: ansible_os_family == "Debian"
+      when: ansible_os_family == "Debian" and not docker_containerd_only | bool
+
+    - set_fact:
+        config_toml: "{{lookup('file', '/etc/containerd/config.toml') }}"
+      when: ansible_os_family == "Debian" and docker_containerd_only | bool
+
+    - assert:
+        that:
+          - "'containerd.runtimes.nvidia' in config_toml"
+      when: ansible_os_family == "Debian" and docker_containerd_only | bool
