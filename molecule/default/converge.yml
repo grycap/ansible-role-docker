@@ -53,3 +53,4 @@
     - assert:
         that:
           - "'nvidia-container-runtime' in docker_json"
+      when: ansible_os_family == "Debian"
