@@ -24,4 +24,5 @@ galaxy_info:
 dependencies:
 - role: 'NVIDIA.nvidia_driver'
   nvidia_driver_branch: "{{ docker_nvidia_driver_version }}"
+  nvidia_driver_skip_reboot: yes
   when: docker_nvidia_support | bool
