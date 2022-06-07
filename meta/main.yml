@@ -22,6 +22,6 @@ galaxy_info:
    - docker
 
 dependencies:
-- role: 'NVIDIA.nvidia_driver'
+- role: 'grycap.nvidia_driver'
   nvidia_driver_branch: "{{ docker_nvidia_driver_version }}"
   when: docker_nvidia_support | bool
