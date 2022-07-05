@@ -13,6 +13,13 @@
     creates: /etc/containerd/config.toml
   notify: restart containerd
 
+- name: Enable CRI plugin
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: 'disabled_plugins = \["cri"\]'
+    replace: 'disabled_plugins = []'
+  register: containerd_config
+
 - name: Set systemd cgroup driver
   replace:
     path: /etc/containerd/config.toml
