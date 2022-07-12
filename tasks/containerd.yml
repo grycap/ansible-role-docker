@@ -70,6 +70,5 @@
     src: https://github.com/containerd/nerdctl/releases/download/v{{docker_nerdctl_version}}/nerdctl-{{docker_nerdctl_version}}-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
-    include: ['nerdctl']
     creates: /usr/local/bin/nerdctl
   ignore_errors: yes
