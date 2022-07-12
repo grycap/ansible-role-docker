@@ -30,6 +30,7 @@
 
     - set_fact:
         docker_containerd_only: true
+        docker_containerd_install_cni: true
       when: lookup('env','CONTAINERD') == "1"
 
     - name: "Include grycap.docker"

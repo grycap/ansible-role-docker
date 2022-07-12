@@ -1,0 +1,53 @@
+    - name: Create /usr/libexec/cni/
+      file:
+        path: /usr/libexec/cni/
+        state: directory
+
+    - name: install CNI plugins
+      unarchive:
+        src: https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
+        dest: /usr/libexec/cni/
+        remote_src: yes
+        creates: /usr/libexec/cni/bridge
+
+    - name: Create /etc/cni/net.d/
+      file:
+        path: /etc/cni/net.d/
+        state: directory
+
+    - name: Create bridge CNI config file
+      copy:
+        dest: /etc/cni/net.d/10-containerd-net.conflist
+        content: |
+          {
+            "cniVersion": "1.0.0",
+            "name": "containerd-net",
+            "plugins": [
+              {
+                "type": "bridge",
+                "bridge": "cni0",
+                "isGateway": true,
+                "ipMasq": true,
+                "promiscMode": true,
+                "ipam": {
+                  "type": "host-local",
+                  "ranges": [
+                    [{
+                      "subnet": "10.88.0.0/16"
+                    }],
+                    [{
+                      "subnet": "2001:4860:4860::/64"
+                    }]
+                  ],
+                  "routes": [
+                    { "dst": "0.0.0.0/0" },
+                    { "dst": "::/0" }
+                  ]
+                }
+              },
+              {
+                "type": "portmap",
+                "capabilities": {"portMappings": true}
+              }
+            ]
+          }
