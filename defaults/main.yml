@@ -23,3 +23,4 @@ docker_nvidia_options:
 # Installs containerd only, not full docker
 docker_containerd_only: false
 docker_nerdctl_version: 0.21.0
+docker_containerd_install_cni: false
