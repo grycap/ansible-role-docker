@@ -61,6 +61,10 @@
 - name: start containerd
   service: name=containerd state=started enabled=yes
 
+- name: Install containerd CNI plugins
+  shell: curl https://raw.githubusercontent.com/containerd/containerd/main/script/setup/install-cni | bash
+  when: docker_containerd_install_cni
+
 - name: install nerdctl client
   unarchive:
     src: https://github.com/containerd/nerdctl/releases/download/v{{docker_nerdctl_version}}/nerdctl-{{docker_nerdctl_version}}-linux-amd64.tar.gz
