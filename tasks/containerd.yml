@@ -27,10 +27,10 @@
   notify: restart containerd
 
 - name: Set containerd root dir
-  replace:
+  lineinfile:
     path: /etc/containerd/config.toml
     regexp: '^root ='
-    replace: 'root = {{ docker_containerd_root }}'
+    line: 'root = {{ docker_containerd_root }}'
   notify: restart containerd
   when: docker_containerd_root != ""
 
