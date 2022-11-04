@@ -1,7 +1,7 @@
   - name: Include Docker tasks
-    include: "docker.yml"
+    include_tasks: "docker.yml"
     when: not docker_containerd_only | bool
 
   - name: Include Containerd tasks
-    include: "containerd.yml"
+    include_tasks: "containerd.yml"
     when: docker_containerd_only | bool

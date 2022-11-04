@@ -64,11 +64,14 @@
 - name: start containerd
   service: name=containerd state=started enabled=yes
 
+- name: Install containerd CNI plugins
+  include_tasks: install_cni.yml
+  when: docker_containerd_install_cni
+
 - name: install nerdctl client
   unarchive:
     src: https://github.com/containerd/nerdctl/releases/download/v{{docker_nerdctl_version}}/nerdctl-{{docker_nerdctl_version}}-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
-    include: ['nerdctl']
     creates: /usr/local/bin/nerdctl
   ignore_errors: true
