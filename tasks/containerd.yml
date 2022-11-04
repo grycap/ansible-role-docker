@@ -30,9 +30,9 @@
   replace:
     path: /etc/containerd/config.toml
     regexp: '^root ='
-    replace: 'root = {{ containerd_root }}'
+    replace: 'root = {{ docker_containerd_root }}'
   notify: restart containerd
-  when: containerd_root != ""
+  when: docker_containerd_root != ""
 
 - block:
 
