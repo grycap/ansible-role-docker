@@ -3,10 +3,6 @@ dependency:
   name: galaxy
 driver:
   name: docker
-options:
-  ignore-certs: True
-  ignore-errors: True
-  role-file: requirements.yml
 platforms:
   - name: instance
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-centos7}-ansible:latest"
