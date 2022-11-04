@@ -32,6 +32,8 @@ The variables that can be passed to this role and a brief description about them
 				runtimeArgs: []
 	# Installs containerd only, not full docker
 	docker_containerd_only: false
+	docker_nerdctl_version: 0.21.0
+	containerd_root: ""
 
 Example Playbook
 ----------------

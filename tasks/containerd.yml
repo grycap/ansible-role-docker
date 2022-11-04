@@ -7,7 +7,6 @@
     state: directory
 
 - name: Create /etc/containerd/config.toml
-  register: containerd_config
   shell: containerd config default > /etc/containerd/config.toml
   args:
     creates: /etc/containerd/config.toml
@@ -18,14 +17,22 @@
     path: /etc/containerd/config.toml
     regexp: 'disabled_plugins = \["cri"\]'
     replace: 'disabled_plugins = []'
-  register: containerd_config
+  notify: restart containerd
 
 - name: Set systemd cgroup driver
   replace:
     path: /etc/containerd/config.toml
     regexp: '(\s+)SystemdCgroup = false(\s+)'
     replace: '\1SystemdCgroup = true\2'
-  register: containerd_config
+  notify: restart containerd
+
+- name: Set containerd root dir
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: '^root ='
+    replace: 'root = {{ containerd_root }}'
+  notify: restart containerd
+  when: containerd_root != ""
 
 - block:
 
@@ -43,20 +50,16 @@
                         [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
                           BinaryName = "/usr/bin/nvidia-container-runtime"
                           SystemdCgroup = true
+    notify: restart containerd
  
   - name: Change runtime to nvidia
     replace:
       path: /etc/containerd/config.toml
       regexp: '^(.*)runtime(.*) = "runc"(.*)$'
       replace: '\1runtime\2 = "nvidia"\3'
+    notify: restart containerd
 
   when: docker_nvidia_support | bool
-
-- name: restart containerd
-  service:
-    name: containerd
-    state: restarted
-  when: containerd_config is changed
 
 - name: start containerd
   service: name=containerd state=started enabled=yes
@@ -68,4 +71,4 @@
     remote_src: yes
     include: ['nerdctl']
     creates: /usr/local/bin/nerdctl
-  ignore_errors: yes
+  ignore_errors: true
