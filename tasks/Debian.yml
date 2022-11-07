@@ -53,9 +53,12 @@
 
 - block:
 
+  # set version fixed until we know why 1.6.9 make k8s to fail
   - name: Install containerd.io
     register: containerd_installed
-    apt: name=containerd.io state=present
+    apt:
+      name: containerd.io
+      state: present
 
   - name: Delete initial /etc/containerd/config.toml file
     file:
