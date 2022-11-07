@@ -11,6 +11,7 @@
   file:
     path: /etc/containerd/config.toml
     state: touch
+  changed_when: false
 
 - name: Enable CRI plugin
   lineinfile:
