@@ -7,30 +7,16 @@
     state: directory
 
 - name: Create /etc/containerd/config.toml
-  shell: containerd config default > /etc/containerd/config.toml
-  args:
-    creates: /etc/containerd/config.toml
-  notify: restart containerd
+  file:
+    path: /etc/containerd/config.toml
+    state: touch
+  changed_when: false
 
 - name: Enable CRI plugin
   lineinfile:
     path: /etc/containerd/config.toml
     regexp: 'disabled_plugins = \["cri"\]'
     line: 'disabled_plugins = []'
-  notify: restart containerd
-
-- name: Set systemd cgroup driver
-  replace:
-    path: /etc/containerd/config.toml
-    regexp: '(\s+)SystemdCgroup = false(\s+)'
-    replace: '\1SystemdCgroup = true\2'
-  notify: restart containerd
-
-- name: Set systemd_cgroup
-  replace:
-    path: /etc/containerd/config.toml
-    regexp: '(\s+)systemd_cgroup = false(\s+)'
-    replace: '\1systemd_cgroup = true\2'
   notify: restart containerd
 
 - name: Set containerd root dir
