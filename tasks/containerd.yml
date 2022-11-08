@@ -27,13 +27,6 @@
     replace: '\1SystemdCgroup = true\2'
   notify: restart containerd
 
-- name: Set systemd_cgroup
-  replace:
-    path: /etc/containerd/config.toml
-    regexp: '(\s+)systemd_cgroup = false(\s+)'
-    replace: '\1systemd_cgroup = true\2'
-  notify: restart containerd
-
 - name: Set containerd root dir
   lineinfile:
     path: /etc/containerd/config.toml
