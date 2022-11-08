@@ -32,7 +32,7 @@ The variables that can be passed to this role and a brief description about them
 				runtimeArgs: []
 	# Installs containerd only, not full docker
 	docker_containerd_only: false
-	docker_containerd_version: 1.6.8
+	docker_containerd_version: "latest"
 	# Set the version of the command nerdctl to install
 	docker_nerdctl_version: 1.0.0
 	# Install containerd CNI plugins
