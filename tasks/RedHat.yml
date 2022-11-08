@@ -38,7 +38,7 @@
   - name: Install containerd.io
     register: containerd_installed
     yum:
-      name: "containerd.io-1.6.8-3.1.el{{ansible_distribution_major_version}}"
+      name: "containerd.io-{{docker_containerd_version}}*"
       state: installed
       update_cache: yes
 
