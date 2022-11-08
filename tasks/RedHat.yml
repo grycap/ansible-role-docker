@@ -48,7 +48,7 @@
       name: containerd.io
       state: latest
       update_cache: yes
-    when: docker_containerd_version != "latest"
+    when: docker_containerd_version == "latest"
 
   - name: Delete initial /etc/containerd/config.toml file
     file:
