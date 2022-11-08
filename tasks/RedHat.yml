@@ -34,13 +34,21 @@
 
 - block:
 
-  # set version fixed until we know why 1.6.9 make k8s to fail
   - name: Install containerd.io
     register: containerd_installed
     yum:
       name: "containerd.io-{{docker_containerd_version}}*"
       state: installed
       update_cache: yes
+    when: docker_containerd_version != "latest"
+
+  - name: Install containerd.io
+    register: containerd_installed
+    yum:
+      name: containerd.io
+      state: latest
+      update_cache: yes
+    when: docker_containerd_version != "latest"
 
   - name: Delete initial /etc/containerd/config.toml file
     file:
