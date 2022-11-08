@@ -57,7 +57,7 @@
   - name: Install containerd.io
     register: containerd_installed
     apt:
-      name: containerd.io
+      name: containerd.io={{docker_containerd_version}}*
       state: present
 
   - name: Delete initial /etc/containerd/config.toml file

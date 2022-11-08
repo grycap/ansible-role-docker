@@ -22,6 +22,7 @@ docker_nvidia_options:
       runtimeArgs: []
 # Installs containerd only, not full docker
 docker_containerd_only: false
+docker_containerd_version: 1.6.8
 # Set the version of the command nerdctl to install
 docker_nerdctl_version: 1.0.0
 # Install containerd CNI plugins
