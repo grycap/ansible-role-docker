@@ -19,7 +19,7 @@
   when: ansible_distribution == "Ubuntu"
 
 - name: Add Docker repo key
-  ansible.builtin.get_url:
+  get_url:
     url: "https://download.docker.com/linux/debian/gpg"
     dest: /etc/apt/trusted.gpg.d/docker.asc
     mode: '0644'
