@@ -19,13 +19,11 @@
   when: ansible_distribution == "Ubuntu"
 
 - name: Add Docker repo key
-  apt_key: url="https://download.docker.com/linux/debian/gpg"
-  ignore_errors: yes
-  register: add_docker_repo
-
-- name: Add Docker repo key (python 2.7.9 or older)
-  shell: curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -qq - >/dev/null
-  when: add_docker_repo is failed
+  ansible.builtin.get_url:
+    url: "https://download.docker.com/linux/debian/gpg"
+    dest: /etc/apt/trusted.gpg.d/docker.asc
+    mode: '0644'
+    force: true
 
 - name: Add docker-ce  repo
   apt_repository: repo='deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_channel }}'
