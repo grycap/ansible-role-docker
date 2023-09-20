@@ -64,7 +64,6 @@
     register: containerd_installed
     apt:
       name: containerd.io
-      state: latest
     when: docker_containerd_version == "latest"
 
   - name: Delete initial /etc/containerd/config.toml file
