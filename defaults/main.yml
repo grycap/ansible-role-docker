@@ -9,7 +9,7 @@ docker_version: "latest"
 docker_compatible_versions: []
 docker_install_criu: true
 docker_install_pip: true
-docker_compose_version: "2.23.3"
+docker_compose_version: "2.23.2"
 docker_config_values: {}
 # Nvidia docker options to add in the docker.json file
 docker_nvidia_support: false
