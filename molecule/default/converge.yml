@@ -5,7 +5,7 @@
   vars: 
     ansible_python_interpreter: /usr/bin/python
     nvidia_driver_skip_reboot: yes
-    docker_compose_version: 2.23.2
+    docker_compose_version: v2.23.2
   tasks:
     - name: Link python
       raw: ls /usr/bin/python || { ls /usr/bin/python2 && ln -s /usr/bin/python2 /usr/bin/python; } || { ls /usr/bin/python3 && ln -s /usr/bin/python3 /usr/bin/python; }
@@ -73,4 +73,4 @@
 
     - assert:
         that:
-          - "docker_compose_version in docker_compose_v.stdout"
+          - "docker_compose_version[1:] in docker_compose_v.stdout"
