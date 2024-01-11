@@ -65,3 +65,11 @@
         that:
           - "'containerd.runtimes.nvidia' in slurpfile['content'] | b64decode"
       when: ansible_os_family == "Debian" and lookup('env','CONTAINERD') == "1"
+
+    - command: docker-compose -v
+      changed_when: false
+      register: docker_compose_v
+
+    - assert:
+        that:
+          - "docker_compose_version in docker_compose_v.stdout"
