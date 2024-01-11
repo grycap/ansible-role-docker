@@ -70,7 +70,9 @@
     - command: docker-compose -v
       changed_when: false
       register: docker_compose_v
+      when: lookup('env','CONTAINERD') == "0"
 
     - assert:
         that:
           - "docker_compose_version[1:] in docker_compose_v.stdout"
+      when: lookup('env','CONTAINERD') == "0"
