@@ -144,7 +144,7 @@
       creates: /usr/bin/pip
 
   - name: Install dependencies for docker management pip3
-    pip: name=docker,docker-compose executable=pip3
+    pip: name=docker executable=pip3
     when: ansible_python.version.major > 2
 
   - name: Install websocket-client version 0.59.0 for docker management pip2
@@ -158,8 +158,6 @@
   - name: Install {{docker_package}} for docker management pip2
     pip: name="{{docker_package}}" executable=pip2 version={{docker_pkg_version}}
     when: ansible_python.version.major <= 2
-    
-    # do not install docker-compose in pip2 as it fails
 
   when: docker_install_pip | bool
 
