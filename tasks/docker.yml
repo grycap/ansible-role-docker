@@ -144,7 +144,13 @@
       creates: /usr/bin/pip
 
   - name: Install dependencies for docker management pip3
-    pip: name=docker executable=pip3
+    pip: name=docker,docker-compose executable=pip3
+    when: ansible_python.version.major > 2
+
+  - name: Remove docker-compose v1 bin
+    file:
+      path: /usr/local/bin/docker-compose
+      state: absent
     when: ansible_python.version.major > 2
 
   - name: Install websocket-client version 0.59.0 for docker management pip2
@@ -161,9 +167,9 @@
 
   when: docker_install_pip | bool
 
-- name: Install docker compose
+- name: Install docker compose bin
   get_url:
     url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
-    dest: /usr/local/bin/docker-compose
+    dest: /usr/bin/docker-compose
     mode: '0755'
   when: docker_compose_version != ""
