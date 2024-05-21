@@ -161,6 +161,10 @@
     pip: name=websocket-client executable=pip2 version=0.59.0
     when: ansible_python.version.major <= 2
 
+  - name: Install requests version <2.32.0 for docker management
+    pip: name=requests<2.32.0
+    when: ansible_python.version.major > 2
+
   - name: Install requests version 2.15.1 for docker management pip2
     pip: name=requests executable=pip2 version=2.15.1
     when: ansible_python.version.major <= 2
