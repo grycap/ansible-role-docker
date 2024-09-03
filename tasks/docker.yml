@@ -159,7 +159,16 @@
       - docker-compose
       executable: pip3
       extra_args: "{{ extra_args }}"
-    when: ansible_python.version.major > 2
+    when: ansible_python.version.major > 2 and ansible_python_version is version('3.11', '<')
+
+  - name: Install dependencies for docker management pip3 in py3.11+
+    pip:
+      name:
+      - docker
+      - docker-compose
+      executable: pip3
+      extra_args: "{{ extra_args }}"
+    when: ansible_python_version is version('3.11', '>=')
 
   - name: Remove docker-compose v1 bin
     file:
