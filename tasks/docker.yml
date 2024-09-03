@@ -125,6 +125,10 @@
       docker_pkg_version: 4.4.4
     when: ansible_python_version is version('2.7.0', '>=')
 
+  - name: Set extra_args var
+    set_fact:
+      extra_args: ""
+
   - name: Set extra_args var in py3.11
     set_fact:
       extra_args: --break-system-packages
