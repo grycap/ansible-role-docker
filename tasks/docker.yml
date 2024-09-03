@@ -154,9 +154,11 @@
 
   - block:
     # https://github.com/docker/compose/issues/11168
-    - name: Remove python3-yaml (6.0.1)
+    - name: Remove python3-yaml and jsonschema
       apt:
-        name: python3-yaml
+        name:
+          - python3-yaml
+          - python3-jsonschema
         state: absent
 
     - name: Install dependencies for docker management pip3 (pyyaml 5.3.1)
