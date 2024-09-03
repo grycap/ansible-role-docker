@@ -152,12 +152,19 @@
     args:
       creates: /usr/bin/pip
 
-  - name: Install dependencies for docker management pip3 (pyyaml 5.3.1)
-    pip:
-      name:
-      - pyyaml==5.3.1
-      executable: pip3
-      extra_args: "{{ extra_args }}"
+  - block:
+    # https://github.com/docker/compose/issues/11168
+    - name: Remove python3-yaml (6.0.1)
+      apt:
+        name: python3-yaml
+        state: absent
+
+    - name: Install dependencies for docker management pip3 (pyyaml 5.3.1)
+      pip:
+        name:
+        - pyyaml==5.3.1
+        executable: pip3
+        extra_args: "{{ extra_args }}"
     when: ansible_python_version is version('3.11', '>=')
 
   - name: Install dependencies for docker management pip3
