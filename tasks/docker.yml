@@ -168,7 +168,8 @@
     when: ansible_python.version.major <= 2
 
   - name: Install requests version <2.32.0 for docker management
-    pip: name=requests<2.32.0
+    pip:
+      name: "requests<2.32.0"
       extra_args: "{{ extra_args }}"
     when: ansible_python.version.major > 2
 
