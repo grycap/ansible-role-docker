@@ -125,6 +125,15 @@
       docker_pkg_version: 4.4.4
     when: ansible_python_version is version('2.7.0', '>=')
 
+  - name: Set extra_args var
+    set_fact:
+      extra_args: ""
+
+  - name: Set extra_args var in py3.11
+    set_fact:
+      extra_args: --break-system-packages
+    when: ansible_python_version is version('3.11', '>=')
+
   - set_fact:
       docker_package: docker-py
       docker_pkg_version: latest
@@ -143,12 +152,28 @@
     args:
       creates: /usr/bin/pip
 
+  - block:
+    # https://github.com/docker/compose/issues/11168
+    - name: Remove python3-yaml (6.0.1)
+      apt:
+        name: python3-yaml
+        state: absent
+
+    - name: Install dependencies for docker management pip3 (pyyaml 5.3.1)
+      pip:
+        name:
+        - pyyaml==5.3.1
+        executable: pip3
+        extra_args: "{{ extra_args }}"
+    when: ansible_python_version is version('3.11', '>=')
+
   - name: Install dependencies for docker management pip3
     pip:
       name:
       - docker<7.0.0  # Fix version to avoid errors in ansible docker_compose module
       - docker-compose
       executable: pip3
+      extra_args: "{{ extra_args }}"
     when: ansible_python.version.major > 2
 
   - name: Remove docker-compose v1 bin
@@ -162,7 +187,9 @@
     when: ansible_python.version.major <= 2
 
   - name: Install requests version <2.32.0 for docker management
-    pip: name=requests<2.32.0
+    pip:
+      name: "requests<2.32.0"
+      extra_args: "{{ extra_args }}"
     when: ansible_python.version.major > 2
 
   - name: Install requests version 2.15.1 for docker management pip2
