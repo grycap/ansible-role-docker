@@ -125,6 +125,11 @@
       docker_pkg_version: 4.4.4
     when: ansible_python_version is version('2.7.0', '>=')
 
+  - name: Set extra_args var in py3.11
+    set_fact:
+      extra_args: --break-system-packages
+    when: ansible_python_version is version('3.11', '>=')
+
   - set_fact:
       docker_package: docker-py
       docker_pkg_version: latest
@@ -149,6 +154,7 @@
       - docker<7.0.0  # Fix version to avoid errors in ansible docker_compose module
       - docker-compose
       executable: pip3
+      extra_args: "{{ extra_args }}"
     when: ansible_python.version.major > 2
 
   - name: Remove docker-compose v1 bin
@@ -163,6 +169,7 @@
 
   - name: Install requests version <2.32.0 for docker management
     pip: name=requests<2.32.0
+      extra_args: "{{ extra_args }}"
     when: ansible_python.version.major > 2
 
   - name: Install requests version 2.15.1 for docker management pip2
