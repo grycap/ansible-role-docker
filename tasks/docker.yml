@@ -152,6 +152,14 @@
     args:
       creates: /usr/bin/pip
 
+  - name: Install dependencies for docker management pip3 (pyyaml 5.3.1)
+    pip:
+      name:
+      - pyyaml==5.3.1
+      executable: pip3
+      extra_args: "{{ extra_args }}"
+    when: ansible_python_version is version('3.11', '>=')
+
   - name: Install dependencies for docker management pip3
     pip:
       name:
@@ -159,16 +167,7 @@
       - docker-compose
       executable: pip3
       extra_args: "{{ extra_args }}"
-    when: ansible_python.version.major > 2 and ansible_python_version is version('3.11', '<')
-
-  - name: Install dependencies for docker management pip3 in py3.11+
-    pip:
-      name:
-      - docker
-      - docker-compose
-      executable: pip3
-      extra_args: "{{ extra_args }}"
-    when: ansible_python_version is version('3.11', '>=')
+    when: ansible_python.version.major > 2
 
   - name: Remove docker-compose v1 bin
     file:
