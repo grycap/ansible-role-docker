@@ -40,7 +40,7 @@
   - name: Add nvidia runtime
     blockinfile:
       path: /etc/containerd/config.toml
-      insertbefore: '\[plugins\."io\.containerd\.grpc\.v1\.cri"\.cni\]'
+      insertafter: '\[plugins\."io\.containerd\.grpc\.v1\.cri"\.containerd\.runtimes\]'
       block: |
           # Add Nvidia runtime
                     [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
