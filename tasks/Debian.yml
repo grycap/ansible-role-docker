@@ -47,6 +47,12 @@
     apt: name=criu state=present
     when: docker_install_criu and ansible_distribution_major_version == "16"
 
+  - name: Add current user to docker group
+    user:
+      name: "{{ ansible_user }}"
+      groups: docker
+      append: yes
+
   when: not docker_containerd_only | bool
 
 - block:
