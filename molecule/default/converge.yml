@@ -37,7 +37,7 @@
 
     - name: "Include grycap.docker"
       include_role:
-        name: "ansible-role-docker"
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
       vars:
         docker_config_values: {"log-driver": "json-file"}
 
