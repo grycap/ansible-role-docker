@@ -49,9 +49,10 @@
 
   - name: Add current user to docker group
     user:
-      name: "{{ ansible_user | default(ansible_env.USER) }}"
+      name: "{{ ansible_user }}"
       groups: docker
       append: yes
+    when: ansible_user is defined
 
   when: not docker_containerd_only | bool
 
