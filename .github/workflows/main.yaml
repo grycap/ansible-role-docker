@@ -29,7 +29,7 @@ jobs:
       - name: Set up Python 3.
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
       - name: Install test dependencies.
         run: pip3 install ansible==12.3.0 molecule-plugins[docker] docker
@@ -59,7 +59,7 @@ jobs:
       - name: Set up Python 3.
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
       - name: Install test dependencies.
         run: pip3 install ansible==12.3.0 molecule-plugins[docker] docker
