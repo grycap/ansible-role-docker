@@ -20,6 +20,7 @@ jobs:
           - rockylinux9
           - ubuntu2204
           - ubuntu2404
+          - ubuntu2604
 
     steps:
       - name: Check out the codebase.
@@ -50,7 +51,7 @@ jobs:
           - rockylinux9
           - ubuntu2204
           - ubuntu2404
-
+          - ubuntu2604
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v2
