@@ -152,14 +152,25 @@
     args:
       creates: /usr/bin/pip
 
-  - name: Install dependencies for docker management pip3
-    pip:
-      name:
-      - docker<7.0.0  # Keep compatibility with external playbooks still using community.docker.docker_compose
-      - docker-compose
-      - pyyaml==5.3.1
-      executable: pip3
-      extra_args: "{{ extra_args }}"
+  # This is block is to mantain compatibility with external playbooks still
+  # using docker_compose which requires docker-py<7.0.0 and pyyaml==5.3.1
+  - block:
+
+    - name: Remove python3-yaml and jsonschema
+      apt:
+        name:
+          - python3-yaml
+          - python3-jsonschema
+        state: absent
+
+    - name: Install dependencies for docker management pip3
+      pip:
+        name:
+        - docker<7.0.0  # Keep compatibility with external playbooks still using community.docker.docker_compose
+        - docker-compose
+        executable: pip3
+        extra_args: "{{ extra_args }}"
+
     when: ansible_python.version.major > 2 and ansible_python_version is version('3.14', '<')
 
   - name: Remove docker-compose v1 bin
