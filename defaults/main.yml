@@ -27,6 +27,6 @@ docker_containerd_version: "latest"
 docker_nerdctl_version: 1.0.0
 # Install containerd CNI plugins
 docker_containerd_install_cni: false
-docker_containerd_cni_version: '1.2.3'
+docker_containerd_cni_version: '1.9.1'
 # Set the root path for containerd
 docker_containerd_root: ""
