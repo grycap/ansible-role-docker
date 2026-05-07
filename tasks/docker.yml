@@ -155,11 +155,11 @@
   - name: Install dependencies for docker management pip3
     pip:
       name:
-      - docker<7.0.0  # Fix version to avoid errors in ansible docker_compose module
+      - docker<7.0.0  # Keep compatibility with external playbooks still using community.docker.docker_compose
       - docker-compose
       executable: pip3
       extra_args: "{{ extra_args }}"
-    when: ansible_python.version.major > 2
+    when: ansible_python.version.major > 2 and ansible_python_version is version('3.14', '<')
 
   - name: Remove docker-compose v1 bin
     file:
