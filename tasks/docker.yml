@@ -162,6 +162,7 @@
           - python3-yaml
           - python3-jsonschema
         state: absent
+      when: ansible_os_family == "Debian"
 
     - name: Install dependencies for docker management pip3
       pip:
