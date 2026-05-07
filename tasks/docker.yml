@@ -157,6 +157,7 @@
       name:
       - docker<7.0.0  # Keep compatibility with external playbooks still using community.docker.docker_compose
       - docker-compose
+      - pyyaml==5.3.1
       executable: pip3
       extra_args: "{{ extra_args }}"
     when: ansible_python.version.major > 2 and ansible_python_version is version('3.14', '<')
