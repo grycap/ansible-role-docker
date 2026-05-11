@@ -9,7 +9,7 @@ docker_version: "latest"
 docker_compatible_versions: []
 docker_install_criu: true
 docker_install_pip: true
-docker_compose_version: "v2.23.2"
+docker_compose_version: "v2.40.3"
 docker_config_values: {}
 # Nvidia docker options to add in the docker.json file
 docker_nvidia_support: false
@@ -27,6 +27,6 @@ docker_containerd_version: "latest"
 docker_nerdctl_version: 1.0.0
 # Install containerd CNI plugins
 docker_containerd_install_cni: false
-docker_containerd_cni_version: '1.1.1'
+docker_containerd_cni_version: '1.9.1'
 # Set the root path for containerd
 docker_containerd_root: ""

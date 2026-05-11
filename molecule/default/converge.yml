@@ -27,7 +27,9 @@
     # Only test nvidia support in Debian systems
     - set_fact:
         docker_nvidia_support: true
-      when: ansible_os_family == "Debian"
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_distribution_version is version('26.04', '<')
 
     - set_fact:
         docker_containerd_only: true
@@ -51,21 +53,33 @@
 
     - slurp: src=/etc/docker/daemon.json
       register: slurpfile
-      when: ansible_os_family == "Debian" and lookup('env','CONTAINERD') == "0"
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_distribution_version is version('26.04', '<')
+        - lookup('env','CONTAINERD') == "0"
 
     - assert:
         that:
           - "'nvidia-container-runtime' in slurpfile['content'] | b64decode"
-      when: ansible_os_family == "Debian" and lookup('env','CONTAINERD') == "0"
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_distribution_version is version('26.04', '<')
+        - lookup('env','CONTAINERD') == "0"
 
     - slurp: src=/etc/containerd/config.toml
       register: slurpfile
-      when: ansible_os_family == "Debian" and lookup('env','CONTAINERD') == "1"
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_distribution_version is version('26.04', '<')
+        - lookup('env','CONTAINERD') == "1"
 
     - assert:
         that:
           - "'containerd.runtimes.nvidia' in slurpfile['content'] | b64decode"
-      when: ansible_os_family == "Debian" and lookup('env','CONTAINERD') == "1"
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_distribution_version is version('26.04', '<')
+        - lookup('env','CONTAINERD') == "1"
 
     - command: docker-compose -v
       changed_when: false
