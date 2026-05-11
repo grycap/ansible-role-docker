@@ -64,6 +64,7 @@
   - set_fact:
       nvidia_repo_name: nvidia-docker
       nvidia_package_name: nvidia-docker2
+    when: not docker_containerd_only | bool
 
   # for some reason installing nvidia-container-runtime without version does not work
   - set_fact:
@@ -71,7 +72,7 @@
       nvidia_package_name: nvidia-container-runtime
     when: docker_containerd_only | bool
 
-  - name: Download {{nvidia_repo_name}} yum repo
+  - name: Download yum repo
     get_url:
       url: https://nvidia.github.io/{{nvidia_repo_name}}/{{ansible_distribution | lower}}{{ansible_distribution_major_version}}/{{nvidia_repo_name}}.repo
       dest: /etc/yum.repos.d/{{nvidia_repo_name}}.repo
