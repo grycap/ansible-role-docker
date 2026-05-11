@@ -119,11 +119,11 @@
   when: docker_install | bool
 
 - set_fact:
-    docker_pip_install: false
+    docker_install_pip: false
   when: ansible_python_version is version('3.14', '>=')
 
 - include_tasks: docker_pip.yml
-  when: docker_pip_install | bool
+  when: docker_install_pip | bool
 
 - name: Install docker compose bin
   get_url:
