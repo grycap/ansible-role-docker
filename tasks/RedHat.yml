@@ -82,7 +82,7 @@
       state: present
       key: https://nvidia.github.io/{{nvidia_repo_name}}/gpgkey
 
-  - name: Install {{nvidia_package_name}} package
+  - name: Install nvidia package
     yum: name={{nvidia_package_name}}
 
   when: docker_nvidia_support | bool
