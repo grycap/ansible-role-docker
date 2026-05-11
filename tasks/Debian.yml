@@ -80,34 +80,6 @@
   when: docker_containerd_only | bool
 
 
-- block:
-
-  - set_fact:
-      nvidia_package_name: nvidia-docker2
-    when: not docker_containerd_only | bool
-
-  - set_fact:
-      nvidia_package_name: nvidia-container-runtime
-    when: docker_containerd_only | bool
-
-  - name: Download nvidia repo apt list
-    get_url:
-      url: https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list
-      dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
-    register: apt_list
-
-  - name: Add nvidia-docker repo key
-    get_url:
-      url: "https://nvidia.github.io/libnvidia-container/gpgkey"
-      dest: /etc/apt/trusted.gpg.d/nvidia-container-toolkit.asc
-      mode: '0644'
-
-  - name: Ubuntu apt update
-    apt: update_cache=yes
-    when: apt_list is changed
-
-  - name: Install nvidia-docker2 package
-    apt: name={{nvidia_package_name}}
-
+- include_tasks: docker_nvidia.yml
   when: docker_nvidia_support | bool
-  
+

@@ -118,88 +118,12 @@
 
   when: docker_install | bool
 
-- block:
+- set_fact:
+    docker_pip_install: false
+  when: ansible_python_version is version('3.14', '>=')
 
-  - set_fact:
-      docker_package: docker
-      docker_pkg_version: 4.4.4
-    when: ansible_python_version is version('2.7.0', '>=')
-
-  - name: Set extra_args var
-    set_fact:
-      extra_args: ""
-
-  - name: Set extra_args var in py3.11
-    set_fact:
-      extra_args: --break-system-packages
-    when: ansible_python_version is version('3.11', '>=')
-
-  - set_fact:
-      docker_package: docker-py
-      docker_pkg_version: latest
-    when: ansible_python_version is version('2.7.0', '<')
-
-  - name: Install pip and setuptools Py3
-    package: name=python3-setuptools,python3-pip
-    when: ansible_python.version.major > 2
-
-  - name: Install pip and setuptools
-    package: name=python-setuptools,python-pip
-    when: ansible_python.version.major <= 2
-
-  - name: Link pip
-    shell: "{ ls /usr/bin/pip2 && ln -s /usr/bin/pip2 /usr/bin/pip; } || { ls /usr/bin/pip3 && ln -s /usr/bin/pip3 /usr/bin/pip; }"
-    args:
-      creates: /usr/bin/pip
-
-  # This is block is to mantain compatibility with external playbooks still
-  # using docker_compose which requires docker-py<7.0.0 and pyyaml==5.3.1
-  - block:
-
-    - name: Remove python3-yaml and jsonschema
-      apt:
-        name:
-          - python3-yaml
-          - python3-jsonschema
-        state: absent
-      when: ansible_os_family == "Debian"
-
-    - name: Install dependencies for docker management pip3
-      pip:
-        name:
-        - docker<7.0.0  # Keep compatibility with external playbooks still using community.docker.docker_compose
-        - docker-compose
-        - pyyaml==5.3.1
-        executable: pip3
-        extra_args: "{{ extra_args }}"
-
-    when: ansible_python.version.major > 2 and ansible_python_version is version('3.14', '<')
-
-  - name: Remove docker-compose v1 bin
-    file:
-      path: /usr/local/bin/docker-compose
-      state: absent
-    when: ansible_python.version.major > 2
-
-  - name: Install websocket-client version 0.59.0 for docker management pip2
-    pip: name=websocket-client executable=pip2 version=0.59.0
-    when: ansible_python.version.major <= 2
-
-  - name: Install requests version <2.32.0 for docker management
-    pip:
-      name: "requests"
-      extra_args: "{{ extra_args }}"
-    when: ansible_python.version.major > 2
-
-  - name: Install requests version 2.15.1 for docker management pip2
-    pip: name=requests executable=pip2 version=2.15.1
-    when: ansible_python.version.major <= 2
-
-  - name: Install {{docker_package}} for docker management pip2
-    pip: name="{{docker_package}}" executable=pip2 version={{docker_pkg_version}}
-    when: ansible_python.version.major <= 2
-
-  when: docker_install_pip | bool
+- include_tasks: docker_pip.yml
+  when: docker_pip_install | bool
 
 - name: Install docker compose bin
   get_url:
